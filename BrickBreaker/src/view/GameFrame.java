@@ -27,7 +27,7 @@ public class GameFrame extends JFrame {
 	private GameFrame() {
 		frameSize = screen.getScreenResolution();
 		
-		setTitle("BrickBreaker");
+		setTitle("BrickBreakerMain");
 		setMinimumSize(new Dimension(frameSize[0], frameSize[1]));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,7 +44,7 @@ public class GameFrame extends JFrame {
 		
 		add(mainPanel);
 		
-		setUndecorated(true); //TODO: turn on after implementing exit button
+//		setUndecorated(true); //TODO: turn on after implementing exit button
 		pack();
 		setVisible(true);
 	}
