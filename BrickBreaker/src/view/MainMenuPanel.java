@@ -136,6 +136,7 @@ public class MainMenuPanel extends JPanel {
 		}
 		button.setPreferredSize(newDimension);
 		button.addActionListener(name.equals("Exit") ? e -> System.exit(0) : null);
+		button.addActionListener(name.equals("Play") ? e -> GameFrame.setView("game") : null);
 		return button;
 	}
 	

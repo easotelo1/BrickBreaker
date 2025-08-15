@@ -13,10 +13,9 @@ public final class BrickBreaker implements Runnable {
 	
 	@Override
 	public void run() {
-		while(true) {
-			
-//			System.out.println("running");
-		}
+//		while(!inGame) {
+//			
+//		}
 	}
 	
 //	private void setUp() {

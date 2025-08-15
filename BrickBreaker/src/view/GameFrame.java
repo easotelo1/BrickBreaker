@@ -10,13 +10,14 @@ import model.Screen;
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame {
 	
-	private static GameFrame gameFrame = new GameFrame();
+	private static final GameFrame gameFrame = new GameFrame();
 	
 //	private final JFrame frame;
 	private static CardLayout cardLayout; //http://stackoverflow.com/questions/21459718/how-do-i-switch-jpanels-inside-a-jframe/21460065#21460065
 	private static JPanel mainPanel;
 	private static MainMenuPanel mainMenuPanel; 
 	private static SettingsPanel settingsPanel;
+	private static GamePanel gamePanel;
 	private Screen screen = Screen.getScreen();
 	private int[] frameSize;
 	
@@ -39,12 +40,14 @@ public class GameFrame extends JFrame {
 		mainPanel.add(mainMenuPanel, "menu");
 		settingsPanel = new SettingsPanel(this);
 		mainPanel.add(settingsPanel, "settings");
+		gamePanel = new GamePanel();
+		mainPanel.add(gamePanel, "game");
 		
 		cardLayout.show(mainPanel, "menu");
 		
 		add(mainPanel);
 		
-		setUndecorated(true); //TODO: turn on after implementing exit button
+//		setUndecorated(true); //TODO: turn on after implementing exit button
 		pack();
 		setVisible(true);
 	}
@@ -52,8 +55,7 @@ public class GameFrame extends JFrame {
 	public static void setView(String panelName) {
 		cardLayout.show(mainPanel, panelName);
 	}
-	
-	
+
 	public void setNewDimensions(int[] newFrameSize) {
 		frameSize = screen.getScreenResolution();
 		setMinimumSize(new Dimension(frameSize[0], frameSize[1]));
