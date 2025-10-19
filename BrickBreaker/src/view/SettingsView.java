@@ -27,7 +27,7 @@ import javax.swing.border.EmptyBorder;
 import model.Screen;
 
 @SuppressWarnings("serial")
-public class SettingsPanel extends JPanel {
+public class SettingsView extends JPanel {
 	
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
@@ -37,7 +37,7 @@ public class SettingsPanel extends JPanel {
 	private String resolutionSelection = "1280x720";;
 	private JFrame gameFrame;
 	
-	public SettingsPanel(JFrame gameFrame) {
+	public SettingsView(JFrame gameFrame) {
 		this.gameFrame = gameFrame;
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];

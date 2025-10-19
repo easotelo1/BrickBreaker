@@ -2,16 +2,12 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,14 +17,14 @@ import model.Screen;
 //one panel to handle frame per second events
 //multiple panels for event based games
 @SuppressWarnings("serial")
-public class MainMenuPanel extends JPanel {
+public class MainMenuView extends JPanel {
 	
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
 	private String currResolution;
-	
+		
 	//https://stackoverflow.com/questions/42964669/placing-button-panel-in-center-java-swing
-	public MainMenuPanel() {
+	public MainMenuView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
 
@@ -38,12 +34,12 @@ public class MainMenuPanel extends JPanel {
         setLayout(new GridBagLayout());
         
         GridBagConstraints gbcSettings = new GridBagConstraints();
-        JPanel settingsPanel = createSettingsPanel();
+        SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
         gbcSettings.anchor = GridBagConstraints.NORTHEAST;
         gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
         gbcSettings.weightx = 1;
         gbcSettings.weighty = 1;
-        add(settingsPanel, gbcSettings);
+        add(settingsButtonPanel.getPanel(), gbcSettings);
         
         GridBagConstraints gbcLabel = new GridBagConstraints();
         gbcLabel.anchor = GridBagConstraints.NORTH;
@@ -138,60 +134,6 @@ public class MainMenuPanel extends JPanel {
 		button.addActionListener(name.equals("Exit") ? e -> System.exit(0) : null);
 		button.addActionListener(name.equals("Play") ? e -> GameFrame.setView("game") : null);
 		return button;
-	}
-	
-	private JPanel createSettingsPanel() {
-		FlowLayout settingsPanelFlowLayout;
-		switch(currResolution) {
-			case "1280x720":
-				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
-				break;
-			case "1920x1080":
-				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
-				break;
-			case "2560x1440":
-				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 150, 60);
-				break;
-			default:
-				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
-		}
-		JPanel settingsPanel = new JPanel(settingsPanelFlowLayout); // default constructor is a FlowLayout
-		settingsPanel.setBackground(Color.BLACK);
-//		JLabel testLabel = new JLabel("Hello World");
-//		settingsPanel.add(testLabel);
-		settingsPanel.add(createSettingsButton());
-		return settingsPanel;
-	}
-	
-	private JButton createSettingsButton() {
-		try {
-			Image img = ImageIO.read(getClass().getResource("../resources/settings-512.png"));
-			Image scaledImg;
-			switch(currResolution) {
-				case "1280x720":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/25, mainPanelSize[1]/18, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "1920x1080":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/30, mainPanelSize[1]/20, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "2560x1440":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/40, mainPanelSize[1]/24, java.awt.Image.SCALE_SMOOTH);
-					break;
-				default:
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/20, mainPanelSize[1]/13, java.awt.Image.SCALE_SMOOTH);
-			}
-//			Image scaledImg = img.getScaledInstance(mainPanelSize[0]/25, mainPanelSize[1]/18, java.awt.Image.SCALE_SMOOTH);
-			JButton settingsButton = new JButton(new ImageIcon(scaledImg));
-			settingsButton.setBackground(Color.BLACK);
-			settingsButton.setFocusPainted(false);
-			settingsButton.setBorderPainted(false);
-			settingsButton.addActionListener(e -> GameFrame.setView("settings")); 
-			return settingsButton;
-		} catch(Exception ex) {
-			System.out.println(ex);
-			
-		}
-		return null;
 	}
 
 }

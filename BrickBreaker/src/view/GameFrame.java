@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import model.Screen;
 
@@ -15,9 +16,9 @@ public class GameFrame extends JFrame {
 //	private final JFrame frame;
 	private static CardLayout cardLayout; //http://stackoverflow.com/questions/21459718/how-do-i-switch-jpanels-inside-a-jframe/21460065#21460065
 	private static JPanel mainPanel;
-	private static MainMenuPanel mainMenuPanel; 
-	private static SettingsPanel settingsPanel;
-	private static GamePanel gamePanel;
+	private static MainMenuView mainMenuPanel; 
+	private static SettingsView settingsPanel;
+	private static GameView gamePanel;
 	private Screen screen = Screen.getScreen();
 	private int[] frameSize;
 	
@@ -27,7 +28,7 @@ public class GameFrame extends JFrame {
 	
 	private GameFrame() {
 		frameSize = screen.getScreenResolution();
-		
+
 		setTitle("BrickBreaker");
 		setMinimumSize(new Dimension(frameSize[0], frameSize[1]));
 		setLocationRelativeTo(null);
@@ -36,24 +37,29 @@ public class GameFrame extends JFrame {
 		cardLayout = new CardLayout();
 		mainPanel = new JPanel(cardLayout);
 		
-		mainMenuPanel = new MainMenuPanel();
+		mainMenuPanel = new MainMenuView();
 		mainPanel.add(mainMenuPanel, "menu");
-		settingsPanel = new SettingsPanel(this);
+		settingsPanel = new SettingsView(this);
 		mainPanel.add(settingsPanel, "settings");
-		gamePanel = new GamePanel();
+		gamePanel = new GameView();
 		mainPanel.add(gamePanel, "game");
 		
 		cardLayout.show(mainPanel, "menu");
 		
 		add(mainPanel);
 		
-//		setUndecorated(true); //TODO: turn on after implementing exit button
+		setUndecorated(true); //TODO: turn on after implementing exit button
 		pack();
 		setVisible(true);
 	}
 	
 	public static void setView(String panelName) {
 		cardLayout.show(mainPanel, panelName);
+		if(panelName.equals("game")) {
+			SwingUtilities.invokeLater(()-> {
+				gamePanel.requestFocusInWindow();
+			});
+		}
 	}
 
 	public void setNewDimensions(int[] newFrameSize) {

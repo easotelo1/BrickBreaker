@@ -6,16 +6,17 @@ public final class BrickBreaker implements Runnable {
 //	private GameFrame gameFrame;
 	
 	public BrickBreaker() {
-		GameFrame.getGameFrame();
+
 		Thread thread = new Thread(this);
 		thread.start();
 	}
 	
 	@Override
 	public void run() {
-//		while(!inGame) {
-//			
-//		}
+		while(true) {
+			GameFrame.getGameFrame();
+
+		}
 	}
 	
 //	private void setUp() {
