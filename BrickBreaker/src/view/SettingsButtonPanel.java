@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 
@@ -55,24 +56,33 @@ public class SettingsButtonPanel {
 		try {
 			Image img = ImageIO.read(getClass().getResource("../resources/settings-512.png"));
 			Image scaledImg;
+			Dimension buttonDim;
+
 			switch(currResolution) {
-				case "1280x720":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/25, mainPanelSize[1]/18, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "1920x1080":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/30, mainPanelSize[1]/20, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "2560x1440":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/40, mainPanelSize[1]/24, java.awt.Image.SCALE_SMOOTH);
-					break;
-				default:
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/20, mainPanelSize[1]/13, java.awt.Image.SCALE_SMOOTH);
+	            case "1280x720":
+	                buttonDim = new Dimension(mainPanelSize[0]/25, mainPanelSize[1]/18);
+	                break;
+	            case "1920x1080":
+	                buttonDim = new Dimension(mainPanelSize[0]/30, mainPanelSize[1]/20);
+	                break;
+	            case "2560x1440":
+	                buttonDim = new Dimension(mainPanelSize[0]/40, mainPanelSize[1]/24);
+	                break;
+	            default:
+	                buttonDim = new Dimension(mainPanelSize[0]/20, mainPanelSize[1]/13);
 			}
-//			Image scaledImg = img.getScaledInstance(mainPanelSize[0]/25, mainPanelSize[1]/18, java.awt.Image.SCALE_SMOOTH);
+			
+			scaledImg = img.getScaledInstance(buttonDim.width, buttonDim.height, java.awt.Image.SCALE_SMOOTH);
+			
 			JButton settingsButton = new JButton(new ImageIcon(scaledImg));
 			settingsButton.setBackground(Color.BLACK);
 			settingsButton.setFocusPainted(false);
 			settingsButton.setBorderPainted(false);
+			
+	        settingsButton.setPreferredSize(buttonDim);
+	        settingsButton.setMinimumSize(buttonDim);
+	        settingsButton.setMaximumSize(buttonDim);
+			
 			settingsButton.addActionListener(e -> GameFrame.setView("settings")); 
 			return settingsButton;
 		} catch(Exception ex) {

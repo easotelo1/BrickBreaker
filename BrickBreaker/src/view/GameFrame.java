@@ -26,6 +26,10 @@ public class GameFrame extends JFrame {
 		return gameFrame;
 	}
 	
+	public static GameView getGamePanel() {
+		return gamePanel;
+	}
+	
 	private GameFrame() {
 		frameSize = screen.getScreenResolution();
 
@@ -63,12 +67,24 @@ public class GameFrame extends JFrame {
 	}
 
 	public void setNewDimensions(int[] newFrameSize) {
-		frameSize = screen.getScreenResolution();
+        frameSize = screen.getScreenResolution(); 
+
+		setMinimumSize(null);
+        setPreferredSize(null);
+        setMaximumSize(null);
+
+		mainMenuPanel.updateSizeAndLayout(); 
+        settingsPanel.updateSizeAndLayout();
+        gamePanel.updateSizeAndLayout(); 
+
+        setPreferredSize(new Dimension(frameSize[0], frameSize[1]));
+        setSize(new Dimension(frameSize[0], frameSize[1])); 
+        pack(); 
+        
+        setLocationRelativeTo(null); 
 		setMinimumSize(new Dimension(frameSize[0], frameSize[1]));
+
 		System.out.println("Resized to " + frameSize[0] + "x" + frameSize[1]);
-		
-		dispose();
-		new GameFrame();
 	}
 	
 }

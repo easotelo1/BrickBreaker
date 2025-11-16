@@ -37,6 +37,11 @@ public class SettingsView extends JPanel {
 	private String resolutionSelection = "1280x720";;
 	private JFrame gameFrame;
 	
+    private JPanel backButtonPanel;
+    private JPanel settingsOptionsPanel;
+    private JPanel applyButtonPanel;
+    private JComboBox<String> resolutionComboBox;
+	
 	public SettingsView(JFrame gameFrame) {
 		this.gameFrame = gameFrame;
 		mainPanelSize = screen.getScreenResolution();
@@ -44,10 +49,16 @@ public class SettingsView extends JPanel {
 		setBackground(Color.BLACK);
 		setLayout(new GridBagLayout());
 		
+        setupComponents();
+	}
+	
+	private void setupComponents() {
+        this.removeAll(); // Clear existing components
+
 		GridBagConstraints gbcBackButton = new GridBagConstraints();
 		gbcBackButton.anchor = GridBagConstraints.NORTHWEST;
 		gbcBackButton.gridwidth = GridBagConstraints.REMAINDER;
-		JPanel backButtonPanel = createBackButtonPanel();
+		backButtonPanel = createBackButtonPanel();
 		gbcBackButton.weightx = 1;
 		gbcBackButton.weighty = 0.4;
 		add(backButtonPanel, gbcBackButton);
@@ -57,7 +68,7 @@ public class SettingsView extends JPanel {
 		gbcSettingsButtons.weighty = 0.4;
 		gbcSettingsButtons.gridwidth = GridBagConstraints.REMAINDER;
 		
-		JPanel settingsOptionsPanel = createSettingsOptionsPanel();
+		settingsOptionsPanel = createSettingsOptionsPanel();
 		add(settingsOptionsPanel, gbcSettingsButtons);
 		
 		GridBagConstraints gbcApplyButton = new GridBagConstraints();;
@@ -65,9 +76,9 @@ public class SettingsView extends JPanel {
 		gbcApplyButton.weighty = 1;
 		gbcApplyButton.gridwidth = GridBagConstraints.REMAINDER;
 		gbcApplyButton.gridheight = GridBagConstraints.REMAINDER;
-		JPanel applyButtonPanel = createApplyButtonPanel();
+		applyButtonPanel = createApplyButtonPanel();
 		add(applyButtonPanel, gbcApplyButton);
-	}
+    }
 	
 	private JPanel createApplyButtonPanel() {
 		JPanel applyButtonPanel = new JPanel();
@@ -116,15 +127,16 @@ public class SettingsView extends JPanel {
 		JPanel wrapper = new JPanel(new GridBagLayout());
 		GridBagConstraints wrapperConstraints = new GridBagConstraints();
 		wrapperConstraints.anchor = GridBagConstraints.LINE_START;
-		JComboBox<String> cb = new JComboBox<String>(resolutions);
-		Dimension preferredSize = cb.getPreferredSize();
+		
+		resolutionComboBox = new JComboBox<String>(resolutions);
+		Dimension preferredSize = resolutionComboBox.getPreferredSize();
 		preferredSize.height = 45;
 		preferredSize.width = 200;
-		cb.setPreferredSize(preferredSize);
-		cb.setFont(new Font("Serif", Font.BOLD, 18));
-		cb.setBackground(Color.DARK_GRAY);
-		cb.setForeground(Color.WHITE);
-		cb.addItemListener(new ItemListener() {
+		resolutionComboBox.setPreferredSize(preferredSize);
+		resolutionComboBox.setFont(new Font("Serif", Font.BOLD, 18));
+		resolutionComboBox.setBackground(Color.DARK_GRAY);
+		resolutionComboBox.setForeground(Color.WHITE);
+		resolutionComboBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -134,13 +146,13 @@ public class SettingsView extends JPanel {
 			}
 		});
 		//removes JComboBox Border
-		for (int i = 0; i < cb.getComponentCount(); i++) {
-		    if (cb.getComponent(i) instanceof JComponent) {
-		        ((JComponent) cb.getComponent(i)).setBorder(new EmptyBorder(0,0,0,0));
+		for (int i = 0; i < resolutionComboBox.getComponentCount(); i++) {
+		    if (resolutionComboBox.getComponent(i) instanceof JComponent) {
+		        ((JComponent) resolutionComboBox.getComponent(i)).setBorder(new EmptyBorder(0,0,0,0));
 		    }
 		}
-		((JLabel)cb.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-		wrapper.add(cb);
+		((JLabel)resolutionComboBox.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		wrapper.add(resolutionComboBox);
 		wrapper.setBackground(Color.BLACK);
 		settingsOptionsPanel.add(wrapper, wrapperConstraints);
 
@@ -174,24 +186,34 @@ public class SettingsView extends JPanel {
 		try {
 			Image img = ImageIO.read(getClass().getResource("../resources/back-button.png"));
 			Image scaledImg;
+			Dimension buttonDim;
+			
 			switch(currResolution) {
-				case "1280x720":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/20, mainPanelSize[1]/13, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "1920x1080":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/25, mainPanelSize[1]/18, java.awt.Image.SCALE_SMOOTH);
-					break;
-				case "2560x1440":
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/30, mainPanelSize[1]/22, java.awt.Image.SCALE_SMOOTH);
-					break;
-				default:
-					scaledImg = img.getScaledInstance(mainPanelSize[0]/20, mainPanelSize[1]/13, java.awt.Image.SCALE_SMOOTH);
+	            case "1280x720":
+	                buttonDim = new Dimension(mainPanelSize[0]/20, mainPanelSize[1]/13);
+	                break;
+	            case "1920x1080":
+	                buttonDim = new Dimension(mainPanelSize[0]/25, mainPanelSize[1]/18);
+	                break;
+	            case "2560x1440":
+	                buttonDim = new Dimension(mainPanelSize[0]/30, mainPanelSize[1]/22);
+	                break;
+	            default:
+	                buttonDim = new Dimension(mainPanelSize[0]/20, mainPanelSize[1]/13);
 			}
+			
+			scaledImg = img.getScaledInstance(buttonDim.width, buttonDim.height, java.awt.Image.SCALE_SMOOTH);
+			
 //			Image scaledImg = img.getScaledInstance(mainPanelSize[0]/20, mainPanelSize[1]/13, java.awt.Image.SCALE_SMOOTH);
 			JButton settingsButton = new JButton(new ImageIcon(scaledImg));
 			settingsButton.setBackground(Color.BLACK);
 			settingsButton.setFocusPainted(false);
 			settingsButton.setBorderPainted(false);
+			
+	        settingsButton.setPreferredSize(buttonDim);
+	        settingsButton.setMinimumSize(buttonDim);
+	        settingsButton.setMaximumSize(buttonDim);
+	        
 			settingsButton.addActionListener(e -> GameFrame.setView("menu")); 
 			return settingsButton;
 		} catch(Exception ex) {
@@ -200,5 +222,17 @@ public class SettingsView extends JPanel {
 		}
 		return null;
 	}
+	
+	public void updateSizeAndLayout() {
+        mainPanelSize = screen.getScreenResolution();
+        currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
+        resolutionSelection = "1280x720"; //default resolution selection
+        System.out.println("in SettingsView, currResolution =- " + currResolution);
+
+        setupComponents();
+        
+        revalidate();
+        repaint();
+    }
 
 }

@@ -8,6 +8,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -16,12 +18,16 @@ import model.Screen;
 
 @SuppressWarnings("serial")
 public class GameView extends JPanel {
+	
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
 	private String currResolution;
 	
 	private Paddle paddle;
 	
+    // Set to keep track of currently pressed keys for smooth input
+    private final Set<Integer> pressedKeys = new HashSet<>();
+    
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
@@ -47,29 +53,16 @@ public class GameView extends JPanel {
 			}
 		});
 		
-		//TODO: Movement works. fix collision for different resolutions
 		addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				System.out.println("Key Pressed = " + e.getKeyCode());
-				if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-					int newXPos = paddle.getX()-20;
-					if(newXPos < 0+10) {
-						newXPos = 0+10;
-					}
-					paddle.setX(newXPos);
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-					int newXPos = paddle.getX()+20;
-					if(newXPos > mainPanelSize[0] - paddle.getWidth()) {
-						newXPos = mainPanelSize[0]- paddle.getWidth()-10;
-					}
-					paddle.setX(newXPos);
-				}
-				repaint();
-				System.out.println("Paddle X: " + paddle.getX());
-			}
-			
-		});
+            public void keyPressed(KeyEvent e) {
+                pressedKeys.add(e.getKeyCode());
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                pressedKeys.remove(e.getKeyCode());
+            }
+        });
 	
 	}
 	
@@ -108,4 +101,31 @@ public class GameView extends JPanel {
 		
 		System.out.println("paddleWidth = " + paddleWidth);
 	}
+	
+	// This method is called by the BrickBreaker controller's Timer loop.
+	public void updateGameLogic(double timeDeltaSeconds) {
+        if (pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_A)) {
+            paddle.moveLeft();
+        } else if (pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_D)) {
+            paddle.moveRight();
+        } else {
+            paddle.stop();
+        }
+
+        // Tell the paddle to update its position using the time delta from the controller
+        paddle.update(timeDeltaSeconds, mainPanelSize[0]); 
+    }
+	
+    public void updateSizeAndLayout() {
+        mainPanelSize = screen.getScreenResolution();
+        currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
+        
+        setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
+        
+        updateInitialPaddlePosition();
+        
+        revalidate();
+        repaint();
+
+    }
 }
