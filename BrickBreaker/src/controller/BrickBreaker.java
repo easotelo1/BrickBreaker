@@ -1,27 +1,35 @@
 package controller;
-import view.GameFrame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public final class BrickBreaker implements Runnable {
+import javax.swing.Timer;
+
+import view.GameFrame;
+import view.GameView;
+
+public final class BrickBreaker implements ActionListener {
 	
-//	private GameFrame gameFrame;
+    private static final int FRAME_RATE = 60; // Target frames per second
+    private static final int DELAY = 1000 / FRAME_RATE; // Delay in milliseconds for the Timer
+    private static final double UPDATE_INTERVAL_SEC = 1.0 / FRAME_RATE; 
+	
+    private Timer gameLoopTimer;
+	private GameView gameView;
 	
 	public BrickBreaker() {
 		GameFrame.getGameFrame();
-		Thread thread = new Thread(this);
-		thread.start();
+		this.gameView = GameFrame.getGamePanel();
+        
+		// Initialize and start the Timer on the EDT (Application ensures we are on EDT)
+        this.gameLoopTimer = new Timer(DELAY, this);
+        this.gameLoopTimer.start();
+        
 	}
-	
+
 	@Override
-	public void run() {
-		while(true) {
-			
-//			System.out.println("running");
-		}
+	public void actionPerformed(ActionEvent e) {
+		gameView.updateGameLogic(UPDATE_INTERVAL_SEC);
+		gameView.repaint();
 	}
 	
-//	private void setUp() {
-//		GameFrame gm = new GameFrame();
-//		this.gameFrame = gm.getFrame();
-//		System.out.println("Hello World");
-//	}
 }
