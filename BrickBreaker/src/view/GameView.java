@@ -6,13 +6,10 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JPanel;
 
+import controller.PaddleController;
 import model.Paddle;
 import model.Screen;
 
@@ -24,15 +21,30 @@ public class GameView extends JPanel {
 	private String currResolution;
 	
 	private Paddle paddle;
+	private final PaddleController paddleController;
 	
-    // Set to keep track of currently pressed keys for smooth input
-    private final Set<Integer> pressedKeys = new HashSet<>();
+	private static final int PADDLE_SMALL_WIDTH = 130;
+	private static final int PADDLE_SMALL_HEIGHT = 25;
+	
+	private static final int PADDLE_MID_WIDTH = 200;
+	private static final int PADDLE_MID_HEIGHT = 38;
+
+	private static final int PADDLE_LARGE_WIDTH = 300;
+	private static final int PADDLE_LARGE_HEIGHT = 50;
     
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
 		setFocusable(true);
 		
+		int paddleWidth = PADDLE_SMALL_WIDTH;
+		int paddleHeight = PADDLE_SMALL_HEIGHT;
+		int paddleX = (mainPanelSize[0] - paddleWidth) / 2;
+		int paddleY = mainPanelSize[1] - paddleHeight - 100;
+		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
+		this.paddleController = new PaddleController(paddle);
+		addKeyListener(paddleController);
+
 		//TODO: TEMPORARY. Remove after adding pause function
 		GridBagConstraints gbcSettings = new GridBagConstraints();
         SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
@@ -44,7 +56,6 @@ public class GameView extends JPanel {
 
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
-		updateInitialPaddlePosition();
 	
 		addComponentListener(new ComponentAdapter() {
 			@Override
@@ -52,18 +63,7 @@ public class GameView extends JPanel {
 				updateInitialPaddlePosition();
 			}
 		});
-		
-		addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                pressedKeys.add(e.getKeyCode());
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-                pressedKeys.remove(e.getKeyCode());
-            }
-        });
-	
 	}
 	
 	@Override
@@ -79,41 +79,33 @@ public class GameView extends JPanel {
 		System.out.println("currResolution = " + currResolution);
 		switch(currResolution) {
 			case "1280x720":
-				paddleWidth = 130;
-				paddleHeight = 25;
+				paddleWidth = PADDLE_SMALL_WIDTH;
+				paddleHeight = PADDLE_SMALL_HEIGHT;
 				break;
 			case "1920x1080":
-				paddleWidth = 200;
-				paddleHeight = 38;
+				paddleWidth = PADDLE_MID_WIDTH;
+				paddleHeight = PADDLE_MID_HEIGHT;
 				break;
 			case "2560x1440":
-				paddleWidth = 300;
-				paddleHeight = 50;
+				paddleWidth = PADDLE_LARGE_WIDTH;
+				paddleHeight = PADDLE_LARGE_HEIGHT;
 				break;
 			default:
-				paddleWidth = 130;
-				paddleHeight = 25;
+				paddleWidth = PADDLE_SMALL_WIDTH;
+				paddleHeight = PADDLE_SMALL_HEIGHT;
 		}
 
 		int paddleX = (mainPanelSize[0] - paddleWidth) / 2;
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
 		paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
-		
+//		this.paddleController = new PaddleController(paddle);
+		this.paddleController.setPaddle(paddle);
 		System.out.println("paddleWidth = " + paddleWidth);
 	}
 	
 	// This method is called by the BrickBreaker controller's Timer loop.
 	public void updateGameLogic(double timeDeltaSeconds) {
-        if (pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_A)) {
-            paddle.moveLeft();
-        } else if (pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_D)) {
-            paddle.moveRight();
-        } else {
-            paddle.stop();
-        }
-
-        // Tell the paddle to update its position using the time delta from the controller
-        paddle.update(timeDeltaSeconds, mainPanelSize[0]); 
+		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
     }
 	
     public void updateSizeAndLayout() {
