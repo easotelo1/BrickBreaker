@@ -4,10 +4,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import model.GameState;
 import view.GameFrame;
 import view.GameView;
 
 public final class BrickBreaker implements ActionListener {
+	
+	private static final BrickBreaker INSTANCE = new BrickBreaker();
+	
+	public static BrickBreaker getInstance() {
+		return INSTANCE;
+	}
 	
     private static final int FRAME_RATE = 60; // Target frames per second
     private static final int DELAY = 1000 / FRAME_RATE; // Delay in milliseconds for the Timer
@@ -15,21 +22,29 @@ public final class BrickBreaker implements ActionListener {
 	
     private Timer gameLoopTimer;
 	private GameView gameView;
+	private GameState currentState;
 	
 	public BrickBreaker() {
 		GameFrame.getGameFrame();
+		currentState = GameState.MENU;
+		
 		this.gameView = GameFrame.getGamePanel();
-        
+		
 		// Initialize and start the Timer on the EDT (Application ensures we are on EDT)
         this.gameLoopTimer = new Timer(DELAY, this);
         this.gameLoopTimer.start();
-        
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		gameView.updateGameLogic(UPDATE_INTERVAL_SEC);
-		gameView.repaint();
+		if(currentState == GameState.PLAYING) {
+			gameView.updateGameLogic(UPDATE_INTERVAL_SEC);
+			gameView.repaint();
+		}
+	}
+	
+	public GameState getCurrentState() {
+		return this.currentState;
 	}
 	
 }
