@@ -61,15 +61,6 @@ public class GameView extends JPanel {
 		
 		addKeyListener(paddleController);
 
-		//TODO: TEMPORARY. Remove after adding pause function
-//		GridBagConstraints gbcSettings = new GridBagConstraints();
-//        SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
-//        gbcSettings.anchor = GridBagConstraints.NORTHEAST;
-//        gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
-//        gbcSettings.weightx = 1;
-//        gbcSettings.weighty = 1;
-//        add(settingsButtonPanel.getPanel(), gbcSettings);
-
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
 	
