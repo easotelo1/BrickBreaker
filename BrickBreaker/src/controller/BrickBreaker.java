@@ -30,10 +30,44 @@ public final class BrickBreaker implements ActionListener {
 		
 		this.gameView = GameFrame.getGamePanel();
 		
-		// Initialize and start the Timer on the EDT (Application ensures we are on EDT)
+		// Initialize Timer. start the Timer when game starts on the EDT (Application ensures we are on EDT)
         this.gameLoopTimer = new Timer(DELAY, this);
-        this.gameLoopTimer.start();
 	}
+	
+	public void startGame() {
+		currentState = GameState.PLAYING;
+		GameFrame.setView("game");
+		gameView.grabFocus();
+		gameLoopTimer.start();
+		System.out.println("GameState updated to " + currentState);
+	}
+	
+	public void pauseGame() {
+		if (currentState == GameState.PLAYING) {
+            currentState = GameState.PAUSED;
+            gameLoopTimer.stop();
+            GameFrame.setView("pause");
+    		System.out.println("GameState updated to " + currentState);
+
+        }
+	}
+	
+	public void resumeGame() {
+        if (currentState == GameState.PAUSED) {
+            currentState = GameState.PLAYING;
+            GameFrame.setView("game");
+            gameView.grabFocus();
+            gameLoopTimer.start();
+    		System.out.println("GameState updated to " + currentState);
+        }
+    }
+	
+	public void exitToMenu() {
+        currentState = GameState.MENU;
+        gameLoopTimer.stop();
+        GameFrame.setView("menu");
+		System.out.println("GameState updated to " + currentState);
+    }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

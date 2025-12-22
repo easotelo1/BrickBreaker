@@ -12,12 +12,15 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import controller.BrickBreaker;
 import model.Screen;
 
 //one panel to handle frame per second events
 //multiple panels for event based games
 @SuppressWarnings("serial")
 public class MainMenuView extends JPanel {
+	
+//	private BrickBreaker brickBreaker = BrickBreaker.getInstance();
 	
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
@@ -138,7 +141,7 @@ public class MainMenuView extends JPanel {
 		}
 		button.setPreferredSize(newDimension);
 		button.addActionListener(name.equals("Exit") ? e -> System.exit(0) : null);
-		button.addActionListener(name.equals("Play") ? e -> GameFrame.setView("game") : null);
+		button.addActionListener(name.equals("Play") ? e -> BrickBreaker.getInstance().startGame() : null);
 		return button;
 	}
 	

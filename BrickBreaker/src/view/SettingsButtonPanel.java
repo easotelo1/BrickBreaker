@@ -46,8 +46,6 @@ public class SettingsButtonPanel {
 		}
 		JPanel settingsPanel = new JPanel(settingsPanelFlowLayout); // default constructor is a FlowLayout
 		settingsPanel.setBackground(Color.BLACK);
-//		JLabel testLabel = new JLabel("Hello World");
-//		settingsPanel.add(testLabel);
 		settingsPanel.add(createSettingsButton());
 		return settingsPanel;
 	}

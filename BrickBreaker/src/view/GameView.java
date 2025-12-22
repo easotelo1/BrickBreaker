@@ -9,7 +9,9 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
+import controller.BrickBreaker;
 import controller.PaddleController;
+import model.GameState;
 import model.Paddle;
 import model.Screen;
 
@@ -43,16 +45,31 @@ public class GameView extends JPanel {
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
 		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 		this.paddleController = new PaddleController(paddle);
+		
+		addKeyListener(new java.awt.event.KeyAdapter() {
+		    @Override
+		    public void keyPressed(java.awt.event.KeyEvent e) {
+		        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+		        	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		            if (brickBreaker.getCurrentState() == GameState.PLAYING) {
+		                brickBreaker.pauseGame();
+		            } else if (brickBreaker.getCurrentState() == GameState.PAUSED) {
+		                brickBreaker.resumeGame();
+		            }
+		        }
+		    }
+		});
+		
 		addKeyListener(paddleController);
 
 		//TODO: TEMPORARY. Remove after adding pause function
-		GridBagConstraints gbcSettings = new GridBagConstraints();
-        SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
-        gbcSettings.anchor = GridBagConstraints.NORTHEAST;
-        gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
-        gbcSettings.weightx = 1;
-        gbcSettings.weighty = 1;
-        add(settingsButtonPanel.getPanel(), gbcSettings);
+//		GridBagConstraints gbcSettings = new GridBagConstraints();
+//        SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
+//        gbcSettings.anchor = GridBagConstraints.NORTHEAST;
+//        gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
+//        gbcSettings.weightx = 1;
+//        gbcSettings.weighty = 1;
+//        add(settingsButtonPanel.getPanel(), gbcSettings);
 
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));

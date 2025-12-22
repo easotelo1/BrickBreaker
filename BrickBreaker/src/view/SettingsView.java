@@ -227,7 +227,7 @@ public class SettingsView extends JPanel {
         mainPanelSize = screen.getScreenResolution();
         currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
         resolutionSelection = "1280x720"; //default resolution selection
-        System.out.println("in SettingsView, currResolution =- " + currResolution);
+        System.out.println("in SettingsView, currResolution = " + currResolution);
 
         setupComponents();
         
