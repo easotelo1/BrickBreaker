@@ -2,12 +2,16 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,9 +30,9 @@ public class MainMenuView extends JPanel {
 	private int[] mainPanelSize;
 	private String currResolution;
 	
-    private SettingsButtonPanel settingsButtonPanel;
     private JLabel titleLabel;
     private JPanel buttonsPanel;
+    private JPanel settingsButtonPanel;
     private GridBagConstraints gbcLabel;
     private GridBagConstraints gbcMainButtons;
     private GridBagConstraints gbcSettings;
@@ -53,12 +57,12 @@ public class MainMenuView extends JPanel {
         this.removeAll();
 
         // --- Settings Button Panel ---
-        settingsButtonPanel = new SettingsButtonPanel();
+        settingsButtonPanel = createSettingsPanel();
         gbcSettings.anchor = GridBagConstraints.NORTHEAST;
         gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
         gbcSettings.weightx = 1;
         gbcSettings.weighty = 1;
-        add(settingsButtonPanel.getPanel(), gbcSettings);
+        add(settingsButtonPanel, gbcSettings);
         
         // --- Title Label ---
         gbcLabel.anchor = GridBagConstraints.NORTH;
@@ -143,6 +147,67 @@ public class MainMenuView extends JPanel {
 		button.addActionListener(name.equals("Exit") ? e -> System.exit(0) : null);
 		button.addActionListener(name.equals("Play") ? e -> BrickBreaker.getInstance().startGame() : null);
 		return button;
+	}
+	
+	private JPanel createSettingsPanel() {
+		FlowLayout settingsPanelFlowLayout;
+		switch(currResolution) {
+			case "1280x720":
+				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
+				break;
+			case "1920x1080":
+				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
+				break;
+			case "2560x1440":
+				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 150, 60);
+				break;
+			default:
+				settingsPanelFlowLayout = new FlowLayout(FlowLayout.RIGHT, 30, 20);
+		}
+		JPanel settingsPanel = new JPanel(settingsPanelFlowLayout); // default constructor is a FlowLayout
+		settingsPanel.setBackground(Color.BLACK);
+		settingsPanel.add(createSettingsButton());
+		return settingsPanel;
+	}
+	
+	private JButton createSettingsButton() {
+		try {
+			Image img = ImageIO.read(getClass().getResource("../resources/settings-512.png"));
+			Image scaledImg;
+			Dimension buttonDim;
+
+			switch(currResolution) {
+	            case "1280x720":
+	                buttonDim = new Dimension(mainPanelSize[0]/25, mainPanelSize[1]/18);
+	                break;
+	            case "1920x1080":
+	                buttonDim = new Dimension(mainPanelSize[0]/30, mainPanelSize[1]/20);
+	                break;
+	            case "2560x1440":
+	                buttonDim = new Dimension(mainPanelSize[0]/40, mainPanelSize[1]/24);
+	                break;
+	            default:
+	                buttonDim = new Dimension(mainPanelSize[0]/20, mainPanelSize[1]/13);
+			}
+			
+			scaledImg = img.getScaledInstance(buttonDim.width, buttonDim.height, java.awt.Image.SCALE_SMOOTH);
+			
+			JButton settingsButton = new JButton(new ImageIcon(scaledImg));
+			settingsButton.setBackground(Color.BLACK);
+			settingsButton.setFocusPainted(false);
+			settingsButton.setBorderPainted(false);
+			
+	        settingsButton.setPreferredSize(buttonDim);
+	        settingsButton.setMinimumSize(buttonDim);
+	        settingsButton.setMaximumSize(buttonDim);
+			
+			settingsButton.addActionListener(e -> GameFrame.setView("settings")); 
+			return settingsButton;
+		} catch(Exception ex) {
+			System.out.println(ex);
+			
+		}
+		return null;
 	}
 	
     public void updateSizeAndLayout() {
