@@ -32,6 +32,9 @@ public class GameView extends JPanel {
 
 	private static final int PADDLE_LARGE_WIDTH = 300;
 	private static final int PADDLE_LARGE_HEIGHT = 50;
+	
+	private static final int BALL_SMALL_WIDTH = 10;
+	private static final int BALL_SMALL_HEIGHT = 10;
     
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
@@ -51,11 +54,6 @@ public class GameView extends JPanel {
 		        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 		        	BrickBreaker brickBreaker = BrickBreaker.getInstance();
 		        	brickBreaker.pauseGame();
-//		            if (brickBreaker.getCurrentState() == GameState.PLAYING) {
-//		                brickBreaker.pauseGame();
-//		            } else if (brickBreaker.getCurrentState() == GameState.PAUSED) {
-//		                brickBreaker.resumeGame();
-//		            }
 		        }
 		    }
 		});
