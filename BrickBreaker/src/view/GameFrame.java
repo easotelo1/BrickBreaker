@@ -67,6 +67,16 @@ public class GameFrame extends JFrame {
 				gamePanel.requestFocusInWindow();
 			});
 		}
+		if(panelName.equals("settings")) {
+			SwingUtilities.invokeLater(()-> {
+				settingsPanel.requestFocusInWindow();
+			});
+		}
+		if(panelName.equals("pause")) {
+			SwingUtilities.invokeLater(()-> {
+				pauseViewPanel.requestFocusInWindow();
+			});
+		}
 	}
 
 	public void setNewDimensions(int[] newFrameSize) {

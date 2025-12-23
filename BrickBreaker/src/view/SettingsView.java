@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -49,6 +51,8 @@ public class SettingsView extends JPanel {
 		setBackground(Color.BLACK);
 		setLayout(new GridBagLayout());
 		
+		setFocusable(true);
+		addKeyListeners();
         setupComponents();
 	}
 	
@@ -175,7 +179,6 @@ public class SettingsView extends JPanel {
 				settingsPanelFlowLayout = new FlowLayout(FlowLayout.LEFT, 10, 25);
 		}
 			
-//		JPanel settingsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 25)); // default constructor is a FlowLayout
 		JPanel settingsPanel = new JPanel(settingsPanelFlowLayout);
 		settingsPanel.setBackground(Color.BLACK);
 		settingsPanel.add(createBackButton());
@@ -221,6 +224,17 @@ public class SettingsView extends JPanel {
 			
 		}
 		return null;
+	}
+	
+	private void addKeyListeners() {
+		addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+            	if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            		GameFrame.setView("menu");
+            	}
+            }
+        });
 	}
 	
 	public void updateSizeAndLayout() {

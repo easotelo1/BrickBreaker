@@ -5,12 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
 import controller.BrickBreaker;
 import controller.PaddleController;
-import model.GameState;
 import model.Paddle;
 import model.Screen;
 
@@ -20,7 +21,6 @@ public class GameView extends JPanel {
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
 	private String currResolution;
-	
 	private Paddle paddle;
 	private final PaddleController paddleController;
 	
@@ -45,16 +45,17 @@ public class GameView extends JPanel {
 		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 		this.paddleController = new PaddleController(paddle);
 		
-		addKeyListener(new java.awt.event.KeyAdapter() {
+		addKeyListener(new KeyAdapter() {
 		    @Override
-		    public void keyPressed(java.awt.event.KeyEvent e) {
-		        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+		    public void keyPressed(KeyEvent e) {
+		        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 		        	BrickBreaker brickBreaker = BrickBreaker.getInstance();
-		            if (brickBreaker.getCurrentState() == GameState.PLAYING) {
-		                brickBreaker.pauseGame();
-		            } else if (brickBreaker.getCurrentState() == GameState.PAUSED) {
-		                brickBreaker.resumeGame();
-		            }
+		        	brickBreaker.pauseGame();
+//		            if (brickBreaker.getCurrentState() == GameState.PLAYING) {
+//		                brickBreaker.pauseGame();
+//		            } else if (brickBreaker.getCurrentState() == GameState.PAUSED) {
+//		                brickBreaker.resumeGame();
+//		            }
 		        }
 		    }
 		});

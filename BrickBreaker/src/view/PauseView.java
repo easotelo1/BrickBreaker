@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,20 +27,28 @@ public class PauseView extends JPanel{
 	public PauseView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution = mainPanelSize[0] + "x" + mainPanelSize[1];
-//		setFocusable(true);
+		setFocusable(true);
 		
 		// Semi-transparent dark overlay
         setBackground(new Color(0, 0, 0, 180));
         setLayout(new GridBagLayout());
+        
+        addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        			BrickBreaker brickBreaker = BrickBreaker.getInstance();
+        			brickBreaker.resumeGame();
+        		}
+        	}
+        });
         
         setupComponents();
 	}
 	
 	private void setupComponents() {
 		this.removeAll();
-//		double panelWidth = mainPanelSize[0]/3.2;
-//		double panelHeight = mainPanelSize[1]/2.4;
-		
+
 		int panelWidth = (int)(mainPanelSize[0] * 0.32);
 		int panelHeight = (int)(mainPanelSize[1] * 0.42);
 		
@@ -50,7 +60,7 @@ public class PauseView extends JPanel{
         pauseBox.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(25, 40, 25, 40);
+        gbc.insets = new Insets(15, 40, 15, 40);
         gbc.gridwidth = GridBagConstraints.REMAINDER;
 
         JLabel title = new JLabel("PAUSED");
@@ -91,7 +101,8 @@ public class PauseView extends JPanel{
         button.setOpaque(true);
         button.setFocusPainted(false);
         button.setPreferredSize(new Dimension(mainPanelSize[0]/6, mainPanelSize[1]/15));
-        button.setBorder(BorderFactory.createEmptyBorder(6, 20, 6, 20)); // top, left, bottom, right        button.setOpaque(true);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 20, 6, 20)); // top, left, bottom, right
+        button.setOpaque(true);
 
         int buttonWidth = (int) (mainPanelSize[0] * 0.22);
         int buttonHeight = (int) (mainPanelSize[1] * 0.06);
