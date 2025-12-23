@@ -3,12 +3,14 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
+import controller.BrickBreaker;
 import controller.PaddleController;
 import model.Paddle;
 import model.Screen;
@@ -19,7 +21,6 @@ public class GameView extends JPanel {
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
 	private String currResolution;
-	
 	private Paddle paddle;
 	private final PaddleController paddleController;
 	
@@ -43,16 +44,23 @@ public class GameView extends JPanel {
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
 		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 		this.paddleController = new PaddleController(paddle);
+		
+		addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyPressed(KeyEvent e) {
+		        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		        	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		        	brickBreaker.pauseGame();
+//		            if (brickBreaker.getCurrentState() == GameState.PLAYING) {
+//		                brickBreaker.pauseGame();
+//		            } else if (brickBreaker.getCurrentState() == GameState.PAUSED) {
+//		                brickBreaker.resumeGame();
+//		            }
+		        }
+		    }
+		});
+		
 		addKeyListener(paddleController);
-
-		//TODO: TEMPORARY. Remove after adding pause function
-		GridBagConstraints gbcSettings = new GridBagConstraints();
-        SettingsButtonPanel settingsButtonPanel = new SettingsButtonPanel();
-        gbcSettings.anchor = GridBagConstraints.NORTHEAST;
-        gbcSettings.gridwidth = GridBagConstraints.REMAINDER;
-        gbcSettings.weightx = 1;
-        gbcSettings.weighty = 1;
-        add(settingsButtonPanel.getPanel(), gbcSettings);
 
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));

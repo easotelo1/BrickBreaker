@@ -18,6 +18,7 @@ public class GameFrame extends JFrame {
 	private static JPanel mainPanel;
 	private static MainMenuView mainMenuPanel; 
 	private static SettingsView settingsPanel;
+	private static PauseView pauseViewPanel;
 	private static GameView gamePanel;
 	private Screen screen = Screen.getScreen();
 	private int[] frameSize;
@@ -47,6 +48,8 @@ public class GameFrame extends JFrame {
 		mainPanel.add(settingsPanel, "settings");
 		gamePanel = new GameView();
 		mainPanel.add(gamePanel, "game");
+		pauseViewPanel = new PauseView();
+		mainPanel.add(pauseViewPanel, "pause");
 		
 		cardLayout.show(mainPanel, "menu");
 		
@@ -64,6 +67,16 @@ public class GameFrame extends JFrame {
 				gamePanel.requestFocusInWindow();
 			});
 		}
+		if(panelName.equals("settings")) {
+			SwingUtilities.invokeLater(()-> {
+				settingsPanel.requestFocusInWindow();
+			});
+		}
+		if(panelName.equals("pause")) {
+			SwingUtilities.invokeLater(()-> {
+				pauseViewPanel.requestFocusInWindow();
+			});
+		}
 	}
 
 	public void setNewDimensions(int[] newFrameSize) {
@@ -76,6 +89,7 @@ public class GameFrame extends JFrame {
 		mainMenuPanel.updateSizeAndLayout(); 
         settingsPanel.updateSizeAndLayout();
         gamePanel.updateSizeAndLayout(); 
+        pauseViewPanel.updateSizeAndLayout();
 
         setPreferredSize(new Dimension(frameSize[0], frameSize[1]));
         setSize(new Dimension(frameSize[0], frameSize[1])); 
