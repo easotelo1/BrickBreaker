@@ -3,12 +3,16 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.OverlayLayout;
 
 import controller.BallController;
 import controller.BrickBreaker;
@@ -24,6 +28,9 @@ public class GameView extends JPanel {
 	private Screen screen = Screen.getScreen();
 	private int[] mainPanelSize;
 	private String currResolution;
+	
+	private InGameOverlays gameOverlays;
+	
 	private Paddle paddle;
 	private Ball ball;
 	
@@ -41,11 +48,16 @@ public class GameView extends JPanel {
 	
 	private static final int BALL_SMALL_WIDTH = 25;
 	private static final int BALL_SMALL_HEIGHT = 25;
+	
+	private JPanel pushToStartPanel;
     
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
 		setFocusable(true);
+		
+		gameOverlays = new InGameOverlays();
+		pushToStartPanel = gameOverlays.getPushToStartPanel();
 		
 		int paddleWidth = PADDLE_SMALL_WIDTH;
 		int paddleHeight = PADDLE_SMALL_HEIGHT;
@@ -62,6 +74,24 @@ public class GameView extends JPanel {
 		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
 		this.ballController = new BallController(ball);
 		
+		addInGameKeyboardInput();
+		addInGameOverlays();
+
+	}
+	
+	private void addInGameOverlays() {
+//		add(gameOverlays.showPushToStartPanel());
+		setLayout(new OverlayLayout(this));
+		JPanel gameOverlaysPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gameOverlaysPanel.add(pushToStartPanel, gbc);
+		gameOverlaysPanel.setOpaque(false);
+		gameOverlaysPanel.setBorder(BorderFactory.createLineBorder(Color.green, 4));
+		
+		add(gameOverlaysPanel);
+	}
+	
+	private void addInGameKeyboardInput() {
 		addKeyListener(new KeyAdapter() {
 		    @Override
 		    public void keyPressed(KeyEvent e) {
@@ -73,6 +103,19 @@ public class GameView extends JPanel {
 		});
 		
 		addKeyListener(paddleController);
+		
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+					BrickBreaker brickBreaker = BrickBreaker.getInstance();
+					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
+						brickBreaker.startPlaying();
+						pushToStartPanel.setVisible(false);
+					}
+				}
+			}
+		});
 
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
@@ -83,7 +126,6 @@ public class GameView extends JPanel {
 				updateInitialPaddlePosition();
 			}
 		});
-
 	}
 	
 	@Override
@@ -148,6 +190,5 @@ public class GameView extends JPanel {
         
         revalidate();
         repaint();
-
     }
 }

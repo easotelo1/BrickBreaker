@@ -56,7 +56,6 @@ public final class BrickBreaker implements ActionListener {
             gameLoopTimer.stop();
             GameFrame.setView("pause");
     		System.out.println("GameState updated to " + currentState);
-
         }
 	}
 	
