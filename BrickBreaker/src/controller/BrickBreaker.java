@@ -23,10 +23,12 @@ public final class BrickBreaker implements ActionListener {
     private Timer gameLoopTimer;
 	private GameView gameView;
 	private GameState currentState;
-	
+	private GameState previousState;
+
 	public BrickBreaker() {
 		GameFrame.getGameFrame();
 		currentState = GameState.MENU;
+		previousState = GameState.MENU;
 		
 		this.gameView = GameFrame.getGamePanel();
 		
@@ -35,15 +37,21 @@ public final class BrickBreaker implements ActionListener {
 	}
 	
 	public void startGame() {
-		currentState = GameState.PLAYING;
+		currentState = GameState.INGAME_NOT_PLAYING;
 		GameFrame.setView("game");
 		gameView.grabFocus();
 		gameLoopTimer.start();
 		System.out.println("GameState updated to " + currentState);
 	}
 	
+	public void startPlaying() {
+		currentState = GameState.INGAME_PLAYING;
+		System.out.println("GameState updated to " + currentState);
+	}
+	
 	public void pauseGame() {
-		if (currentState == GameState.PLAYING) {
+		if (currentState == GameState.INGAME_PLAYING || currentState == GameState.INGAME_NOT_PLAYING) {
+			previousState = currentState;
             currentState = GameState.PAUSED;
             gameLoopTimer.stop();
             GameFrame.setView("pause");
@@ -54,7 +62,7 @@ public final class BrickBreaker implements ActionListener {
 	
 	public void resumeGame() {
         if (currentState == GameState.PAUSED) {
-            currentState = GameState.PLAYING;
+            currentState = previousState;
             GameFrame.setView("game");
             gameView.grabFocus();
             gameLoopTimer.start();
@@ -72,7 +80,7 @@ public final class BrickBreaker implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(currentState == GameState.PLAYING) {
+		if(currentState == GameState.INGAME_PLAYING || currentState == GameState.INGAME_NOT_PLAYING) {
 			gameView.updateGameLogic(UPDATE_INTERVAL_SEC);
 			gameView.repaint();
 		}

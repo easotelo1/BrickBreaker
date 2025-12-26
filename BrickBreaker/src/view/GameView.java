@@ -10,8 +10,11 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
+import controller.BallController;
 import controller.BrickBreaker;
 import controller.PaddleController;
+import model.Ball;
+import model.GameState;
 import model.Paddle;
 import model.Screen;
 
@@ -22,7 +25,10 @@ public class GameView extends JPanel {
 	private int[] mainPanelSize;
 	private String currResolution;
 	private Paddle paddle;
+	private Ball ball;
+	
 	private final PaddleController paddleController;
+	private final BallController ballController;
 	
 	private static final int PADDLE_SMALL_WIDTH = 130;
 	private static final int PADDLE_SMALL_HEIGHT = 25;
@@ -33,8 +39,8 @@ public class GameView extends JPanel {
 	private static final int PADDLE_LARGE_WIDTH = 300;
 	private static final int PADDLE_LARGE_HEIGHT = 50;
 	
-	private static final int BALL_SMALL_WIDTH = 10;
-	private static final int BALL_SMALL_HEIGHT = 10;
+	private static final int BALL_SMALL_WIDTH = 25;
+	private static final int BALL_SMALL_HEIGHT = 25;
     
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
@@ -47,6 +53,14 @@ public class GameView extends JPanel {
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
 		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 		this.paddleController = new PaddleController(paddle);
+		
+		int ballWidth = BALL_SMALL_WIDTH;
+		int ballHeight = BALL_SMALL_HEIGHT;
+		int ballX = (mainPanelSize[0] - ballWidth) / 2;
+//		int ballY = mainPanelSize[1] - ballHeight - 130;
+		int ballY = paddleY - BALL_SMALL_HEIGHT - 10;
+		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
+		this.ballController = new BallController(ball);
 		
 		addKeyListener(new KeyAdapter() {
 		    @Override
@@ -77,6 +91,9 @@ public class GameView extends JPanel {
 		super.paintComponent(g);
 		
 		g.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
+		g.setColor(Color.WHITE);
+		g.fillOval(ball.getX(), ball.getY(), BALL_SMALL_WIDTH, BALL_SMALL_HEIGHT);
+		
 	}
 	
 	private void updateInitialPaddlePosition() {
@@ -104,7 +121,6 @@ public class GameView extends JPanel {
 		int paddleX = (mainPanelSize[0] - paddleWidth) / 2;
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
 		paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
-//		this.paddleController = new PaddleController(paddle);
 		this.paddleController.setPaddle(paddle);
 		System.out.println("paddleWidth = " + paddleWidth);
 	}
@@ -112,6 +128,14 @@ public class GameView extends JPanel {
 	// This method is called by the BrickBreaker controller's Timer loop.
 	public void updateGameLogic(double timeDeltaSeconds) {
 		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
+		BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		
+		if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
+			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
+		}
+		else {
+			this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
+		}
     }
 	
     public void updateSizeAndLayout() {
