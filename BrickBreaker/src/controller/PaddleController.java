@@ -35,7 +35,7 @@ public class PaddleController extends KeyAdapter {
         } else if (newXPos > maxX) {
             newXPos = maxX;
         }
-
+        
         paddle.setX(newXPos);
     }
     
@@ -72,6 +72,7 @@ public class PaddleController extends KeyAdapter {
     }
     
     public void stop() {
+    	pressedKeys.clear();
         this.velocityX = 0;
     }
     

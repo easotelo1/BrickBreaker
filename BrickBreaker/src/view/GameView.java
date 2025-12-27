@@ -186,9 +186,14 @@ public class GameView extends JPanel {
         
         setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
         
+		pushToStartPanel.setVisible(true);
         updateInitialPaddlePosition();
         
         revalidate();
         repaint();
+    }
+    
+    public void clearInputs() {
+    	paddleController.stop();
     }
 }
