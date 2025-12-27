@@ -112,6 +112,7 @@ public class GameView extends JPanel {
 					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
 						brickBreaker.startPlaying();
 						pushToStartPanel.setVisible(false);
+						ballController.launch(); 
 					}
 				}
 			}
@@ -193,7 +194,8 @@ public class GameView extends JPanel {
         repaint();
     }
     
-    public void clearInputs() {
+    public void resetGame() {
     	paddleController.stop();
+    	ballController.reset();
     }
 }

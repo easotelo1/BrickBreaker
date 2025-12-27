@@ -72,7 +72,7 @@ public final class BrickBreaker implements ActionListener {
 	public void exitToMenu() {
         currentState = GameState.MENU;
 		gameView.updateSizeAndLayout();
-		gameView.clearInputs();
+		gameView.resetGame();
         gameLoopTimer.stop();
         GameFrame.setView("menu");
 		System.out.println("GameState updated to " + currentState);
