@@ -196,6 +196,6 @@ public class GameView extends JPanel {
     
     public void resetGame() {
     	paddleController.stop();
-    	ballController.reset();
+    	ballController.reset((mainPanelSize[0] - BALL_SMALL_WIDTH) / 2, paddle.getY() - BALL_SMALL_HEIGHT - 10);
     }
 }

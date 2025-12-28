@@ -62,6 +62,7 @@ public class BallController {
         //java Math.sin and Math.cos always expect angles in radians.
         this.velocityX = BALL_SPEED * Math.sin(angleRadians);
         this.velocityY = BALL_SPEED * Math.cos(angleRadians);
+
 		
 	}
 	
@@ -69,7 +70,9 @@ public class BallController {
 		ball.setX(newXPos);
 	}
 	
-	public void reset() {
+	public void reset(int xPos, int yPos) {
+		ball.setX(xPos);
+		ball.setY(yPos);
 		this.isLaunched = false;
 		this.velocityX = 0;
 		this.velocityY = 0;
