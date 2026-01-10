@@ -168,17 +168,42 @@ public class GameView extends JPanel {
 		System.out.println("paddleWidth = " + paddleWidth);
 	}
 	
+	//AABB Collision Detection
+	private boolean intersects() {
+		
+		//X-axis overlaps
+		boolean ballLeftEdgeLeftOfPaddleRightEdge = ball.getX() < paddle.getX() + paddle.getWidth();
+		boolean ballRightEdgeRightOfPaddleLeftEdge = ball.getX() + ball.getWidth() > paddle.getX();
+		
+		//Y-axis overlaps
+		boolean ballTopAboveBottomOfPaddle = ball.getY() < paddle.getY() + paddle.getHeight();
+		boolean ballBottomBelowTopOfPaddle = ball.getY() + ball.getHeight() > paddle.getY();
+		
+		boolean intersects = ballLeftEdgeLeftOfPaddleRightEdge && 
+							 ballRightEdgeRightOfPaddleLeftEdge &&
+							 ballTopAboveBottomOfPaddle &&
+							 ballBottomBelowTopOfPaddle;
+		
+		return intersects;
+		
+	}
+	
 	// This method is called by the BrickBreaker controller's Timer loop.
 	public void updateGameLogic(double timeDeltaSeconds) {
-		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
 		BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		
+		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
 		
 		if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
 			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
 		}
 		else {
 			this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
+			if(intersects()) {
+				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
+			}
 		}
+		
     }
 	
     public void updateSizeAndLayout() {
