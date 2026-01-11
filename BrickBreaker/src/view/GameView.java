@@ -49,6 +49,9 @@ public class GameView extends JPanel {
 	private static final int BALL_SMALL_WIDTH = 25;
 	private static final int BALL_SMALL_HEIGHT = 25;
 	
+	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
+	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
+	
 	private JPanel pushToStartPanel;
     
 	public GameView() {
@@ -69,8 +72,7 @@ public class GameView extends JPanel {
 		int ballWidth = BALL_SMALL_WIDTH;
 		int ballHeight = BALL_SMALL_HEIGHT;
 		int ballX = (mainPanelSize[0] - ballWidth) / 2;
-//		int ballY = mainPanelSize[1] - ballHeight - 130;
-		int ballY = paddleY - BALL_SMALL_HEIGHT - 10;
+		int ballY = paddleY - ballHeight - BALL_PADDLE_HEIGHT_GAP;		//about 10 pixel gap between paddle and ball
 		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
 		this.ballController = new BallController(ball);
 		
@@ -135,7 +137,7 @@ public class GameView extends JPanel {
 		
 		g.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
 		g.setColor(Color.WHITE);
-		g.fillOval(ball.getX(), ball.getY(), BALL_SMALL_WIDTH, BALL_SMALL_HEIGHT);
+		g.fillOval(ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
 		
 	}
 	
@@ -169,11 +171,12 @@ public class GameView extends JPanel {
 	}
 	
 	private void updateInitialBallPosition() {
-		int ballWidth = BALL_SMALL_WIDTH;
-		int ballHeight = BALL_SMALL_HEIGHT;
-		int ballX = (mainPanelSize[0] - ballWidth) / 2;
-		int ballY = this.paddle.getY() - BALL_SMALL_HEIGHT - 10;
-		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
+		int newBallSize = (int) (mainPanelSize[0] * BALL_WIDTH_RATIO);
+		
+		// Center on paddle horizontally
+	    int ballX = paddle.getX() + (paddle.getWidth() - newBallSize) / 2;
+	    int ballY = paddle.getY() - newBallSize - BALL_PADDLE_HEIGHT_GAP;  // Above paddle
+	    this.ball = new Ball(ballX, ballY, newBallSize, newBallSize);
 		this.ballController.setBall(ball);
 		
 	}
@@ -231,7 +234,9 @@ public class GameView extends JPanel {
     }
     
     public void resetGame() {
+        mainPanelSize = screen.getScreenResolution();
+        currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
     	paddleController.stop();
-    	ballController.reset((mainPanelSize[0] - BALL_SMALL_WIDTH) / 2, paddle.getY() - BALL_SMALL_HEIGHT - 10);
+    	ballController.reset((mainPanelSize[0] - ball.getWidth()) / 2, paddle.getY() - ball.getHeight() - BALL_PADDLE_HEIGHT_GAP);
     }
 }
