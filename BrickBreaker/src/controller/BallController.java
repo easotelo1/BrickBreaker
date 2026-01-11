@@ -12,7 +12,6 @@ public class BallController {
 	private double velocityX = 0;
 	private double velocityY = 0;
 	private static final double SPEED_RATIO = 0.5;
-//	private static final double BALL_SPEED = 500; //TODO: update later
 	
 	private static final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: ±20° from straight up
 	
