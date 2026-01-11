@@ -13,15 +13,20 @@ public class PaddleController extends KeyAdapter {
 	private final Set<Integer> pressedKeys = new HashSet<>();
 	
 	private double velocityX = 0;
-    private static final double PADDLE_SPEED = 500; //in pixels
+    private static final double SPEED_RATIO = 0.33;
 	private static final double PADDLE_LEFT_BOUNDS = 0.1;
 	private static final double PADDLE_RIGHT_BOUNDS = 1.1;
 	
+	private double speed;
+	
 	public PaddleController(Paddle paddle) {
 		this.paddle = paddle;
+		this.speed = 0;
 	}
 
     public void update(double timeDeltaSeconds, int screenWidth) {
+    	this.speed = screenWidth * SPEED_RATIO;
+    	
         // Calculate the proposed movement amount
         int moveAmount = (int) (this.velocityX * timeDeltaSeconds);
         int newXPos = paddle.getX() + moveAmount;
@@ -35,7 +40,7 @@ public class PaddleController extends KeyAdapter {
         } else if (newXPos > maxX) {
             newXPos = maxX;
         }
-
+        
         paddle.setX(newXPos);
     }
     
@@ -64,14 +69,15 @@ public class PaddleController extends KeyAdapter {
     }
 
     public void moveLeft() {
-        this.velocityX = -PADDLE_SPEED;
+        this.velocityX = -speed;
     }
     
     public void moveRight() {
-        this.velocityX = PADDLE_SPEED;
+        this.velocityX = speed;
     }
     
     public void stop() {
+    	pressedKeys.clear();
         this.velocityX = 0;
     }
     

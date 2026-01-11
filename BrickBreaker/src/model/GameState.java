@@ -2,6 +2,7 @@ package model;
 
 public enum GameState {
 	MENU,
-	PLAYING,
+	INGAME_NOT_PLAYING,
+	INGAME_PLAYING,
 	PAUSED
 }
