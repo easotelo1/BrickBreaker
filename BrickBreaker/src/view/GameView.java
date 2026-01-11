@@ -210,9 +210,18 @@ public class GameView extends JPanel {
 			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
 		}
 		else {
-			this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
+			boolean alive = this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
 			if(intersects()) {
 				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
+			}
+			if(!alive) {
+				System.out.println("You died");
+				try {
+					Thread.sleep(200000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

@@ -19,12 +19,15 @@ public class BallController {
 	
 	private double speed;
 	
+	private boolean alive;
+	
 	public BallController(Ball ball) {
 		this.ball = ball;
 		this.speed = 0;
+		this.alive = true;
 	}
 	
-	public void update(double timeDeltaSeconds, int screenWidth, int screenHeight) {
+	public boolean update(double timeDeltaSeconds, int screenWidth, int screenHeight) {
 		int moveXAmount = (int) (this.velocityX * timeDeltaSeconds);
 		int moveYAmount = (int) (this.velocityY * timeDeltaSeconds);
 		
@@ -41,6 +44,12 @@ public class BallController {
         if (ball.getY() <= 0) {
         	this.velocityY = -(this.velocityY);
         }
+        
+        if(ball.getY() + ball.getHeight() >= screenHeight) {
+        	this.alive = false;
+        }
+        
+        return this.alive;
 		
 	}
 	
@@ -122,6 +131,14 @@ public class BallController {
 	
 	public void setBall(Ball ball) {
 		this.ball = ball;
+	}
+	
+	public boolean getAlive() {
+		return this.alive;
+	}
+	
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 }
