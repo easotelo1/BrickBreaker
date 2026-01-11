@@ -11,14 +11,18 @@ public class BallController {
 	
 	private double velocityX = 0;
 	private double velocityY = 0;
-	private static final double BALL_SPEED = 500; //TODO: update later
+	private static final double SPEED_RATIO = 0.5;
+//	private static final double BALL_SPEED = 500; //TODO: update later
 	
 	private static final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: ±20° from straight up
 	
 	private boolean isLaunched = false;
 	
+	private double speed;
+	
 	public BallController(Ball ball) {
 		this.ball = ball;
+		this.speed = 0;
 	}
 	
 	public void update(double timeDeltaSeconds, int screenWidth, int screenHeight) {
@@ -42,12 +46,14 @@ public class BallController {
 	}
 	
 	
-	public void launch() {
-		if(isLaunched) {
+	public void launch(int screenWidth) {
+		if(this.isLaunched) {
 			return;
 		}
 		
 		this.isLaunched = true;
+		
+		this.speed = screenWidth * SPEED_RATIO;
 		
 		//straight up is 180 degrees.
 		//I want a random number between 115 to 245 degrees. This makes 180 +/- 65 (LAUNCH_CONE_ANGLE_DEGREES)
@@ -58,8 +64,8 @@ public class BallController {
         System.out.println("Ball launching to launchAngleDegrees = " + launchAngleDegrees);
 
         //java Math.sin and Math.cos always expect angles in radians.
-        this.velocityX = BALL_SPEED * Math.sin(angleRadians);
-        this.velocityY = BALL_SPEED * Math.cos(angleRadians);
+        this.velocityX = this.speed * Math.sin(angleRadians);
+        this.velocityY = this.speed * Math.cos(angleRadians);
 	}
 	
 	public void moveWithPaddle(int newXPos) {

@@ -114,7 +114,7 @@ public class GameView extends JPanel {
 					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
 						brickBreaker.startPlaying();
 						pushToStartPanel.setVisible(false);
-						ballController.launch(); 
+						ballController.launch(mainPanelSize[0]); 
 					}
 				}
 			}
