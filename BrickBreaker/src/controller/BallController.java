@@ -129,5 +129,9 @@ public class BallController {
 		this.velocityX = 0;
 		this.velocityY = 0;
 	}
+	
+	public void setBall(Ball ball) {
+		this.ball = ball;
+	}
 
 }

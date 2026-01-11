@@ -163,9 +163,19 @@ public class GameView extends JPanel {
 
 		int paddleX = (mainPanelSize[0] - paddleWidth) / 2;
 		int paddleY = mainPanelSize[1] - paddleHeight - 100;
-		paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
+		this.paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 		this.paddleController.setPaddle(paddle);
 		System.out.println("paddleWidth = " + paddleWidth);
+	}
+	
+	private void updateInitialBallPosition() {
+		int ballWidth = BALL_SMALL_WIDTH;
+		int ballHeight = BALL_SMALL_HEIGHT;
+		int ballX = (mainPanelSize[0] - ballWidth) / 2;
+		int ballY = this.paddle.getY() - BALL_SMALL_HEIGHT - 10;
+		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
+		this.ballController.setBall(ball);
+		
 	}
 	
 	//AABB Collision Detection
@@ -214,6 +224,7 @@ public class GameView extends JPanel {
         
 		pushToStartPanel.setVisible(true);
         updateInitialPaddlePosition();
+        updateInitialBallPosition();
         
         revalidate();
         repaint();
