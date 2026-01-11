@@ -13,7 +13,7 @@ public class BallController {
 	private double velocityY = 0;
 	private static final double SPEED_RATIO = 0.5;
 	
-	private static final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: ±20° from straight up
+	private static final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: +/- 20 degrees from straight up
 	
 	private boolean isLaunched = false;
 	
@@ -57,7 +57,7 @@ public class BallController {
 		//straight up is 180 degrees.
 		//I want a random number between 115 to 245 degrees. This makes 180 +/- 65 (LAUNCH_CONE_ANGLE_DEGREES)
 		double randomOffset = rand.nextDouble(LAUNCH_CONE_ANGLE_DEGREES) * (rand.nextBoolean() ? -1 : 1);
-        double launchAngleDegrees = 180 + randomOffset;  // 115° to 245°
+        double launchAngleDegrees = 180 + randomOffset;  // 115 to 245 degrees
         double angleRadians = Math.toRadians(launchAngleDegrees);
         
         System.out.println("Ball launching to launchAngleDegrees = " + launchAngleDegrees);
@@ -83,31 +83,16 @@ public class BallController {
 	    //clamps down on a [-1,1] relative hit range in extreme edge cases
 	    relativeHit = Math.max(-1.0, Math.min(1.0, relativeHit));
 
-//	    System.out.println("ballCenterX = " + ballCenterX);
-//	    System.out.println("paddleCenterX = " + paddleCenterX);
-//	    System.out.println("relativeHit = " + relativeHit);
-
-
 	    double maxBounceAngle = Math.PI / 4; // +/- 45 degrees max angle
-//	    System.out.println("maxBounceAngle = " + maxBounceAngle);
 
 	    double bounceAngleOffset = relativeHit * maxBounceAngle; 		//calculates angle based on where the ball landed * max angle
-//	    System.out.println("bounceAngleOffset = " + bounceAngleOffset);
 	    	    
 	    // speed is preserved using pythagoreans theorem : sqrt(vx^2 + vy^2)
 	    double speed = Math.hypot(velocityX, velocityY);
-//	    System.out.println("speed = " + speed);
 
 	    // simple pythagoreans trig 
 	    double newVx = speed * Math.sin(bounceAngleOffset);			//horizontal angle
 	    double newVy = -speed * Math.cos(bounceAngleOffset); 		//vertical angle
-	    
-//	    System.out.println("oldVx = " + this.velocityX);
-//	    System.out.println("oldVy = " + this.velocityY);
-//
-//	    System.out.println("newVx = " + newVx);
-//	    System.out.println("newVy = " + newVy);
-
 
 	    this.velocityX = newVx;
 	    this.velocityY = newVy;

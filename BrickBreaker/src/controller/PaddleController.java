@@ -13,7 +13,6 @@ public class PaddleController extends KeyAdapter {
 	private final Set<Integer> pressedKeys = new HashSet<>();
 	
 	private double velocityX = 0;
-//    private static final double PADDLE_SPEED = 500; //in pixels
     private static final double SPEED_RATIO = 0.33;
 	private static final double PADDLE_LEFT_BOUNDS = 0.1;
 	private static final double PADDLE_RIGHT_BOUNDS = 1.1;

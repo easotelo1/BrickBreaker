@@ -82,7 +82,6 @@ public class GameView extends JPanel {
 	}
 	
 	private void addInGameOverlays() {
-//		add(gameOverlays.showPushToStartPanel());
 		setLayout(new OverlayLayout(this));
 		JPanel gameOverlaysPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
