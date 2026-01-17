@@ -3,16 +3,14 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
 
 import controller.BallController;
 import controller.BrickBreaker;
@@ -51,8 +49,6 @@ public class GameView extends JPanel {
 	
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
-	
-	private JPanel pushToStartPanel;
     
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
@@ -60,7 +56,6 @@ public class GameView extends JPanel {
 		setFocusable(true);
 		
 		gameOverlays = new InGameOverlays();
-		pushToStartPanel = gameOverlays.getPushToStartPanel();
 		
 		int paddleWidth = PADDLE_SMALL_WIDTH;
 		int paddleHeight = PADDLE_SMALL_HEIGHT;
@@ -77,19 +72,7 @@ public class GameView extends JPanel {
 		this.ballController = new BallController(ball);
 		
 		addInGameKeyboardInput();
-		addInGameOverlays();
 
-	}
-	
-	private void addInGameOverlays() {
-		setLayout(new OverlayLayout(this));
-		JPanel gameOverlaysPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gameOverlaysPanel.add(pushToStartPanel, gbc);
-		gameOverlaysPanel.setOpaque(false);
-		gameOverlaysPanel.setBorder(BorderFactory.createLineBorder(Color.green, 4));
-		
-		add(gameOverlaysPanel);
 	}
 	
 	private void addInGameKeyboardInput() {
@@ -112,7 +95,7 @@ public class GameView extends JPanel {
 					BrickBreaker brickBreaker = BrickBreaker.getInstance();
 					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
 						brickBreaker.startPlaying();
-						pushToStartPanel.setVisible(false);
+						gameOverlays.hideLaunchOverlay();
 						ballController.launch(mainPanelSize[0]); 
 					}
 				}
@@ -134,9 +117,15 @@ public class GameView extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		g.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
 		g.setColor(Color.WHITE);
 		g.fillOval(ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
+		
+		gameOverlays.draw(g2d);
+		
 		
 	}
 	
@@ -216,12 +205,12 @@ public class GameView extends JPanel {
 			}
 			if(!alive) {
 				System.out.println("You died");
-				try {
-					Thread.sleep(200000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					Thread.sleep(200000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 		
@@ -233,7 +222,8 @@ public class GameView extends JPanel {
         
         setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
         
-		pushToStartPanel.setVisible(true);
+        gameOverlays.showLaunchOverlay();
+        gameOverlays.updateSizeAndLayout();
         updateInitialPaddlePosition();
         updateInitialBallPosition();
         
@@ -247,4 +237,5 @@ public class GameView extends JPanel {
     	paddleController.stop();
     	ballController.reset((mainPanelSize[0] - ball.getWidth()) / 2, paddle.getY() - ball.getHeight() - BALL_PADDLE_HEIGHT_GAP);
     }
+    
 }

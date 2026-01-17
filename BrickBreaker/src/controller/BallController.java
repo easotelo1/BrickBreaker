@@ -44,11 +44,11 @@ public class BallController {
         if (ball.getY() <= 0) {
         	this.velocityY = -(this.velocityY);
         }
-        
+
         if(ball.getY() + ball.getHeight() >= screenHeight) {
         	this.alive = false;
         }
-        
+
         return this.alive;
 		
 	}
@@ -111,14 +111,6 @@ public class BallController {
         if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= screenWidth) {
         	this.velocityX = -(this.velocityX);
         }
-	    
-	    //debug sleep when paddle hits
-//	    try {
-//			Thread.sleep(200000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void reset(int xPos, int yPos) {
