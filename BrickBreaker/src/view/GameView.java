@@ -82,6 +82,7 @@ public class GameView extends JPanel {
 		        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 		        	BrickBreaker brickBreaker = BrickBreaker.getInstance();
 		        	brickBreaker.pauseGame();
+		        	paddleController.stop();
 		        }
 		    }
 		});
@@ -288,5 +289,5 @@ public class GameView extends JPanel {
 		revalidate();
 		repaint();
     }
-    
+       
 }

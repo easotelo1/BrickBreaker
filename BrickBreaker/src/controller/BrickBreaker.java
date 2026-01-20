@@ -14,6 +14,7 @@ public final class BrickBreaker {
 	private Thread gameThread;
     private static final double timeDeltaSeconds = 1.0 / 60.0; // 60 frames per second
     private double accumulatedTime = 0.0;
+    private long lastTime;
 
     private volatile boolean running = false;
     private volatile boolean paused = false;
@@ -32,7 +33,7 @@ public final class BrickBreaker {
 	}
 	
 	private void gameLoop() {
-        long lastTime = System.nanoTime();
+        lastTime = System.nanoTime();
 
         while (running) {
             long now = System.nanoTime();
@@ -97,6 +98,8 @@ public final class BrickBreaker {
             gameView.grabFocus();
             paused = false;
     		System.out.println("GameState updated to " + currentState);
+    		accumulatedTime = 0.0;
+            lastTime = System.nanoTime();
         }
     }
 	
