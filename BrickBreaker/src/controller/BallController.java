@@ -113,9 +113,7 @@ public class BallController {
         }
 	}
 	
-	public void reset(int xPos, int yPos) {
-//		ball.setX(xPos);
-//		ball.setY(yPos);
+	public void reset() {
 		this.isLaunched = false;
 		this.velocityX = 0;
 		this.velocityY = 0;

@@ -115,11 +115,11 @@ public class GameView extends JPanel {
 		            } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
 		                if (gameOverlays.isYesSelected()) {
 		                	System.out.println("Play Again Selected!");
-//		                	brickBreaker.startPlaying();
-		                    brickBreaker.startGame();  // Reset & restart
 		                	resetGame();
+		                    brickBreaker.startGame();  // Reset & restart
 		                } else {
-		                	System.out.println("No selected!");
+		                	System.out.println("Back to main menu selected!");
+		                	gameOverlays.toggleYesNoSelection(); //resets default selection back to yes
 		                    brickBreaker.exitToMenu();
 		                }
 		                gameOverlays.hideGameOver();
@@ -246,9 +246,9 @@ public class GameView extends JPanel {
         
         gameOverlays.showLaunchOverlay();
         gameOverlays.updateSizeAndLayout();
-        gameOverlays.resetHUD();
         updateInitialPaddlePosition();
         updateInitialBallPosition();
+        gameOverlays.resetHUD();
         
         revalidate();
         repaint();
@@ -258,8 +258,14 @@ public class GameView extends JPanel {
     	mainPanelSize = screen.getScreenResolution();
         currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
     	paddleController.stop();
-    	ballController.reset((mainPanelSize[0] - ball.getWidth()) / 2, paddle.getY() - ball.getHeight() - BALL_PADDLE_HEIGHT_GAP);
-    	updateSizeAndLayout();
+    	ballController.reset();
+        updateInitialPaddlePosition();
+        updateInitialBallPosition();
+    	gameOverlays.showLaunchOverlay();
+    	gameOverlays.updateSizeAndLayout();
+    	if(BrickBreaker.getInstance().getCurrentState() == GameState.GAME_OVER) {
+    		gameOverlays.resetHUD();
+    	}
     }
     
     public void playerDeath() {

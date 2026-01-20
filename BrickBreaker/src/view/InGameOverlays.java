@@ -178,7 +178,7 @@ public class InGameOverlays extends JPanel {
 			g2d.setColor(yesSelected ? Color.LIGHT_GRAY : Color.DARK_GRAY);
 			g2d.drawString(yesText, yesCenterX, yesCenterY);
 			
-			g2d.setColor(yesSelected ? Color.DARK_GRAY : Color.LIGHT_GRAY);
+			g2d.setColor(!yesSelected ? Color.LIGHT_GRAY : Color.DARK_GRAY);
 			g2d.drawString(noText, noCenterX, noCenterY);
 		}
 	}

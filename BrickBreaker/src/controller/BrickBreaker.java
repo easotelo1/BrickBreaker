@@ -64,6 +64,7 @@ public final class BrickBreaker {
 		currentState = GameState.INGAME_NOT_PLAYING;
 		GameFrame.setView("game");
 		gameView.grabFocus();
+//		gameView.resetGame();
 		running = true;
         paused = false;
         if(gameThread == null || !gameThread.isAlive()) {
