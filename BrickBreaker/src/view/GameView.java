@@ -246,9 +246,9 @@ public class GameView extends JPanel {
         
         gameOverlays.showLaunchOverlay();
         gameOverlays.updateSizeAndLayout();
+        gameOverlays.resetHUD();
         updateInitialPaddlePosition();
         updateInitialBallPosition();
-        gameOverlays.resetHUD();
         
         revalidate();
         repaint();

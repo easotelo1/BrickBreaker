@@ -53,14 +53,11 @@ public class InGameOverlays extends JPanel {
 	
 	private int playAgainTextWidth;
 	private int playAgainTextHeight;
-//	private int playAgainTextAscent;
 	private int playAgainCenterX;
 	private int playAgainCenterY;
 	
 	private int yesTextWidth;
 	private int noTextWidth;
-//	private int yesNoTextHeight;
-//	private int yesNoTextAscent;
 	private int yesCenterX;
 	private int yesCenterY;
 	private int noCenterX;
@@ -71,7 +68,7 @@ public class InGameOverlays extends JPanel {
 		mainPanelSize = screen.getScreenResolution();
 
 		this.currentScore = 0;
-		this.currentLives = 1;
+		this.currentLives = 3;
 		this.showLaunchOverlay = true;
 		this.showGameOver = false;
 		this.yesSelected = true;
@@ -121,7 +118,6 @@ public class InGameOverlays extends JPanel {
         playAgainMetrics = g2d.getFontMetrics(playAgainFont);
         playAgainTextWidth = playAgainMetrics.stringWidth(playAgainText);
         playAgainTextHeight = playAgainMetrics.getHeight();
-//        playAgainTextAscent = playAgainMetrics.getAscent();
         playAgainCenterX = (screenWidth - playAgainTextWidth) / 2;
         playAgainCenterY = gameOverCenterY + gameOverTextHeight + 20;
 
@@ -129,11 +125,8 @@ public class InGameOverlays extends JPanel {
         yesNoMetrics = g2d.getFontMetrics(yesNoFont);
         yesTextWidth = yesNoMetrics.stringWidth(yesText);
         noTextWidth = yesNoMetrics.stringWidth(noText);
-//        yesNoTextHeight = yesNoMetrics.getHeight();
-//        yesNoTextAscent = yesNoMetrics.getAscent();
         
-        
-        int totalYesNoWidth = yesTextWidth + noTextWidth + 60;  // 60px gap
+        int totalYesNoWidth = yesTextWidth + noTextWidth + 60;
 
         yesCenterX = (screenWidth - totalYesNoWidth) / 2;
         yesCenterY = playAgainCenterY + playAgainTextHeight + 20;
@@ -172,6 +165,7 @@ public class InGameOverlays extends JPanel {
 			g2d.drawString(launchText, launchCenterX, launchCenterY);
 		}
 		
+		///////////GAME OVER///////////
 		if(showGameOver) {
 			setFocusable(true);
 			g2d.setFont(gameOverFont);
@@ -207,6 +201,7 @@ public class InGameOverlays extends JPanel {
 	public void updateSizeAndLayout() {
         mainPanelSize = screen.getScreenResolution();
         updateFontMetrics();
+        repaint();
     }
 	
 	public void hideGameOver() {
@@ -232,7 +227,7 @@ public class InGameOverlays extends JPanel {
     }
 	
 	public void resetHUD() {
-		this.currentLives = 1;
+		this.currentLives = 3;
 		this.currentScore = 0;
 		showLaunchOverlay = true;
 		showGameOver = false;
