@@ -18,24 +18,66 @@ public class InGameOverlays extends JPanel {
 	private int currentScore;
 	private int currentLives;
 	private boolean showLaunchOverlay;
+	private boolean showGameOver;
+	private boolean yesSelected;
 	
 	//cached fontmetrics and text sizes
 	private Font hudFont;
 	private Font launchFont;
+	private Font gameOverFont;
+	private Font playAgainFont;
+	private Font yesNoFont;
+	
 	private FontMetrics launchMetrics;
+	private FontMetrics gameOverMetrics;
+	private FontMetrics playAgainMetrics;
+	private FontMetrics yesNoMetrics;
+	
 	private final String launchText = "Push SPACE to launch!";
+	private final String gameOverText = "GAME OVER";
+	private final String playAgainText = "Play Again?";
+	private final String yesText = "Yes";
+	private final String noText= "No";
+	
 	private int launchTextWidth;
 	private int launchTextHeight;
 	private int launchTextAscent;
 	private int launchCenterX;
 	private int launchCenterY;
+	
+	private int gameOverTextWidth;
+	private int gameOverTextHeight;
+	private int gameOverTextAscent;
+	private int gameOverCenterX;
+	private int gameOverCenterY;
+	
+	private int playAgainTextWidth;
+	private int playAgainTextHeight;
+//	private int playAgainTextAscent;
+	private int playAgainCenterX;
+	private int playAgainCenterY;
+	
+	private int yesTextWidth;
+	private int noTextWidth;
+//	private int yesNoTextHeight;
+//	private int yesNoTextAscent;
+	private int yesCenterX;
+	private int yesCenterY;
+	private int noCenterX;
+	private int noCenterY;
+	
 
 	public InGameOverlays() {
 		mainPanelSize = screen.getScreenResolution();
 
 		this.currentScore = 0;
-		this.currentLives = 3;
+		this.currentLives = 1;
 		this.showLaunchOverlay = true;
+		this.showGameOver = false;
+		this.yesSelected = true;
+		
+		setOpaque(false);
+		setFocusable(false);
 		
 		updateFontMetrics();
 	}
@@ -50,20 +92,63 @@ public class InGameOverlays extends JPanel {
 		int launchSize = (int) (screenWidth * 0.04);
 		launchFont = new Font("Arial", Font.BOLD, launchSize);
 		
+		int gameOverSize = (int) (screenWidth * 0.035);
+		gameOverFont = new Font("Arial", Font.BOLD, gameOverSize);
+		
+		int playAgainSize = (int) (screenWidth * 0.04);
+		playAgainFont = new Font("Arial", Font.BOLD, playAgainSize);
+		
+		int yesNoSize = (int) (screenWidth * 0.03);
+		yesNoFont = new Font("Arial", Font.BOLD, yesNoSize);
+		
 		BufferedImage dummy = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = dummy.createGraphics();
+        
         launchMetrics = g2d.getFontMetrics(launchFont);
         launchTextWidth = launchMetrics.stringWidth(launchText);
         launchTextHeight = launchMetrics.getHeight();
         launchTextAscent = launchMetrics.getAscent();
         launchCenterX = (screenWidth - launchTextWidth) / 2;
         launchCenterY = (screenHeight - launchTextHeight) / 2 + launchTextAscent;
+        
+        gameOverMetrics = g2d.getFontMetrics(gameOverFont);
+        gameOverTextWidth = gameOverMetrics.stringWidth(gameOverText);
+        gameOverTextHeight = gameOverMetrics.getHeight();
+        gameOverTextAscent = gameOverMetrics.getAscent();
+        gameOverCenterX = (screenWidth - gameOverTextWidth) / 2;
+        gameOverCenterY = (screenHeight / 2) - (int) (screenHeight * 0.2) + gameOverTextAscent;
+        
+        playAgainMetrics = g2d.getFontMetrics(playAgainFont);
+        playAgainTextWidth = playAgainMetrics.stringWidth(playAgainText);
+        playAgainTextHeight = playAgainMetrics.getHeight();
+//        playAgainTextAscent = playAgainMetrics.getAscent();
+        playAgainCenterX = (screenWidth - playAgainTextWidth) / 2;
+        playAgainCenterY = gameOverCenterY + gameOverTextHeight + 20;
+
+        
+        yesNoMetrics = g2d.getFontMetrics(yesNoFont);
+        yesTextWidth = yesNoMetrics.stringWidth(yesText);
+        noTextWidth = yesNoMetrics.stringWidth(noText);
+//        yesNoTextHeight = yesNoMetrics.getHeight();
+//        yesNoTextAscent = yesNoMetrics.getAscent();
+        
+        
+        int totalYesNoWidth = yesTextWidth + noTextWidth + 60;  // 60px gap
+
+        yesCenterX = (screenWidth - totalYesNoWidth) / 2;
+        yesCenterY = playAgainCenterY + playAgainTextHeight + 20;
+        
+        noCenterX = ((screenWidth - totalYesNoWidth) / 2) + yesTextWidth + 60;
+        noCenterY = yesCenterY;
+        
+        
         g2d.dispose();
 	}
 	
 	protected void draw(Graphics2D g2d) {	
 		int screenHeight = mainPanelSize[1];
 		
+		/////////HUD SECTION ///////////////
 		g2d.setFont(hudFont);
 		g2d.setColor(Color.DARK_GRAY);
 		
@@ -81,9 +166,26 @@ public class InGameOverlays extends JPanel {
 		
 		g2d.drawString("Lives: " + this.currentLives, livesX, y);
 		
+		///////////PUSH SPACE TO LAUNCH///////////
 		if (showLaunchOverlay) {
 			g2d.setFont(launchFont);
 			g2d.drawString(launchText, launchCenterX, launchCenterY);
+		}
+		
+		if(showGameOver) {
+			setFocusable(true);
+			g2d.setFont(gameOverFont);
+			g2d.drawString(gameOverText, gameOverCenterX, gameOverCenterY);
+			
+			g2d.setFont(playAgainFont);
+			g2d.drawString(playAgainText, playAgainCenterX, playAgainCenterY);
+			
+			g2d.setFont(yesNoFont);
+			g2d.setColor(yesSelected ? Color.LIGHT_GRAY : Color.DARK_GRAY);
+			g2d.drawString(yesText, yesCenterX, yesCenterY);
+			
+			g2d.setColor(yesSelected ? Color.DARK_GRAY : Color.LIGHT_GRAY);
+			g2d.drawString(noText, noCenterX, noCenterY);
 		}
 	}
 
@@ -97,9 +199,44 @@ public class InGameOverlays extends JPanel {
 		repaint();
 	}
 	
+	public void showGameOver() {
+        showGameOver = true;
+        repaint();
+    }
+	
 	public void updateSizeAndLayout() {
         mainPanelSize = screen.getScreenResolution();
         updateFontMetrics();
     }
+	
+	public void hideGameOver() {
+        showGameOver = false;
+        repaint();
+    }
+	
+	public void decreaseLives() {
+		this.currentLives--;
+	}
+	
+	public int getCurrentLives() {
+		return this.currentLives;
+	}
+	
+	public void toggleYesNoSelection() {
+        yesSelected = !yesSelected;
+        repaint();
+    }
+	
+	public boolean isYesSelected() {
+        return yesSelected;
+    }
+	
+	public void resetHUD() {
+		this.currentLives = 1;
+		this.currentScore = 0;
+		showLaunchOverlay = true;
+		showGameOver = false;
+		repaint();
+	}
 
 }

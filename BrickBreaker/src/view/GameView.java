@@ -49,7 +49,7 @@ public class GameView extends JPanel {
 	
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
-    
+	    
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
@@ -72,7 +72,7 @@ public class GameView extends JPanel {
 		this.ballController = new BallController(ball);
 		
 		addInGameKeyboardInput();
-
+		
 	}
 	
 	private void addInGameKeyboardInput() {
@@ -101,6 +101,32 @@ public class GameView extends JPanel {
 				}
 			}
 		});
+		
+		addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyPressed(KeyEvent e) {
+		    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		    	
+		        if (gameOverlays.getCurrentLives() <= 0) {  // Only when Game Over is visible
+		            if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+		                gameOverlays.toggleYesNoSelection();  // Switch to Yes
+		            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+		                gameOverlays.toggleYesNoSelection();  // Switch to No
+		            } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
+		                if (gameOverlays.isYesSelected()) {
+		                	System.out.println("Play Again Selected!");
+//		                	brickBreaker.startPlaying();
+		                    brickBreaker.startGame();  // Reset & restart
+		                	resetGame();
+		                } else {
+		                	System.out.println("No selected!");
+		                    brickBreaker.exitToMenu();
+		                }
+		                gameOverlays.hideGameOver();
+		            }
+		        }
+		    }
+		});
 
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(mainPanelSize[0], mainPanelSize[1]));
@@ -111,6 +137,8 @@ public class GameView extends JPanel {
 				updateInitialPaddlePosition();
 			}
 		});
+		
+		
 	}
 	
 	@Override
@@ -204,13 +232,7 @@ public class GameView extends JPanel {
 				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
 			}
 			if(!alive) {
-				System.out.println("You died");
-//				try {
-//					Thread.sleep(200000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				playerDeath();
 			}
 		}
 		
@@ -226,16 +248,39 @@ public class GameView extends JPanel {
         gameOverlays.updateSizeAndLayout();
         updateInitialPaddlePosition();
         updateInitialBallPosition();
+        gameOverlays.resetHUD();
         
         revalidate();
         repaint();
     }
     
-    public void resetGame() {
-        mainPanelSize = screen.getScreenResolution();
+    public void resetGame() {        
+    	mainPanelSize = screen.getScreenResolution();
         currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
     	paddleController.stop();
     	ballController.reset((mainPanelSize[0] - ball.getWidth()) / 2, paddle.getY() - ball.getHeight() - BALL_PADDLE_HEIGHT_GAP);
+    	updateSizeAndLayout();
+    }
+    
+    public void playerDeath() {
+    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+    	
+    	System.out.println("You died");
+		gameOverlays.decreaseLives();
+		
+        if(gameOverlays.getCurrentLives() <= 0) {
+        	System.out.println("Game Over");
+        	brickBreaker.setCurrentState(GameState.GAME_OVER);
+        	gameOverlays.showGameOver();
+        	paddleController.stop();
+        } 
+        else { 
+        	brickBreaker.playerDied();
+        	resetGame();
+        }
+        
+		revalidate();
+		repaint();
     }
     
 }

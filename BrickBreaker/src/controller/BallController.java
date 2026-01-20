@@ -45,7 +45,7 @@ public class BallController {
         	this.velocityY = -(this.velocityY);
         }
 
-        if(ball.getY() + ball.getHeight() >= screenHeight) {
+        if(ball.getY() >= screenHeight) {
         	this.alive = false;
         }
 
@@ -114,11 +114,12 @@ public class BallController {
 	}
 	
 	public void reset(int xPos, int yPos) {
-		ball.setX(xPos);
-		ball.setY(yPos);
+//		ball.setX(xPos);
+//		ball.setY(yPos);
 		this.isLaunched = false;
 		this.velocityX = 0;
 		this.velocityY = 0;
+		this.alive = true;
 	}
 	
 	public void setBall(Ball ball) {

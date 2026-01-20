@@ -41,7 +41,7 @@ public final class BrickBreaker {
 
             accumulatedTime += deltaSeconds;
 
-            if (!paused) {
+            if (!paused && currentState != GameState.GAME_OVER) {
                 while (accumulatedTime >= timeDeltaSeconds) {
                     gameView.updateGameLogic(timeDeltaSeconds);
                     accumulatedTime -= timeDeltaSeconds;
@@ -66,12 +66,15 @@ public final class BrickBreaker {
 		gameView.grabFocus();
 		running = true;
         paused = false;
-        gameThread = new Thread(this::gameLoop);
-        gameThread.start();
+        if(gameThread == null || !gameThread.isAlive()) {
+	        gameThread = new Thread(this::gameLoop);
+	        gameThread.start();
+        } 
 		System.out.println("GameState updated to " + currentState);
 	}
 	
 	public void startPlaying() {
+		previousState = currentState;
 		currentState = GameState.INGAME_PLAYING;
 		System.out.println("GameState updated to " + currentState);
 	}
@@ -96,6 +99,13 @@ public final class BrickBreaker {
         }
     }
 	
+	public void playerDied() {
+		previousState = currentState;
+		currentState = GameState.INGAME_NOT_PLAYING;
+		System.out.println("GameState updated to " + currentState);
+
+	}
+	
 	public void exitToMenu() {
 		running = false;
 		if (gameThread != null && gameThread.isAlive()) {
@@ -114,6 +124,11 @@ public final class BrickBreaker {
 	
 	public GameState getCurrentState() {
 		return this.currentState;
+	}
+	
+	public void setCurrentState(GameState newState) {
+		this.previousState = this.currentState;
+		this.currentState = newState;
 	}
 	
 }
