@@ -213,6 +213,14 @@ public class InGameOverlays extends JPanel {
 		this.currentLives--;
 	}
 	
+	public int getCurrentScore() {
+		return this.currentScore;
+	}
+	
+	public void updateScore(int newScore) {
+		this.currentScore = newScore;
+	}
+	
 	public int getCurrentLives() {
 		return this.currentLives;
 	}
@@ -233,5 +241,6 @@ public class InGameOverlays extends JPanel {
 		showGameOver = false;
 		repaint();
 	}
+	
 
 }

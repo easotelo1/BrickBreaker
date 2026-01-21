@@ -9,13 +9,16 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
 import controller.BallController;
 import controller.BrickBreaker;
+import controller.BrickController;
 import controller.PaddleController;
 import model.Ball;
+import model.Brick;
 import model.GameState;
 import model.Paddle;
 import model.Screen;
@@ -31,9 +34,11 @@ public class GameView extends JPanel {
 	
 	private Paddle paddle;
 	private Ball ball;
+	private BrickGrid brickGrid;
 	
 	private final PaddleController paddleController;
 	private final BallController ballController;
+	private final BrickController brickController;
 	
 	private static final int PADDLE_SMALL_WIDTH = 130;
 	private static final int PADDLE_SMALL_HEIGHT = 25;
@@ -49,7 +54,9 @@ public class GameView extends JPanel {
 	
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
-	    
+		    
+	private BufferedImage brickImage = null;
+	
 	public GameView() {
 		mainPanelSize = screen.getScreenResolution();
 		currResolution =  mainPanelSize[0] + "x" + mainPanelSize[1];
@@ -71,8 +78,21 @@ public class GameView extends JPanel {
 		this.ball = new Ball(ballX, ballY, ballWidth, ballHeight);
 		this.ballController = new BallController(ball);
 		
+		brickGrid = new BrickGrid();
+		generateBrickImage();
+		
+		this.brickController = new BrickController(gameOverlays, brickGrid.getBricks());
+		
 		addInGameKeyboardInput();
 		
+	}
+	
+	//only draw image when needed so that cpu doesn't get overloaded 
+	private void generateBrickImage() {
+	    brickImage = new BufferedImage(mainPanelSize[0], mainPanelSize[1], BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2d = brickImage.createGraphics();
+	    brickGrid.draw(g2d);
+	    g2d.dispose();
 	}
 	
 	private void addInGameKeyboardInput() {
@@ -155,6 +175,10 @@ public class GameView extends JPanel {
 		
 		gameOverlays.draw(g2d);
 		
+		if (brickImage != null) {
+		    g2d.drawImage(brickImage, 0, 0, null);
+		}
+		
 		
 	}
 	
@@ -218,6 +242,14 @@ public class GameView extends JPanel {
 		
 	}
 	
+	//AABB Collision Detection between ball and brick. Same as above just less variables lol
+	private boolean intersectsBallBrick(Brick brick) {
+	    return ball.getX() < brick.getX() + brick.getWidth() &&
+	           ball.getX() + ball.getWidth() > brick.getX() &&
+	           ball.getY() < brick.getY() + brick.getHeight() &&
+	           ball.getY() + ball.getHeight() > brick.getY();
+	}
+		
 	// This method is called by the BrickBreaker controller's Timer loop.
 	public void updateGameLogic(double timeDeltaSeconds) {
 		BrickBreaker brickBreaker = BrickBreaker.getInstance();
@@ -228,10 +260,25 @@ public class GameView extends JPanel {
 			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
 		}
 		else {
+			//ball movement
 			boolean alive = this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
+			
+			//paddle collision 
 			if(intersects()) {
 				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
 			}
+			
+			//brick collision
+			for (int i = brickGrid.getBricks().size() - 1; i >= 0; i--) {
+			    Brick brick = brickGrid.getBricks().get(i);
+			    if (intersectsBallBrick(brick) && brick.isAlive()) {
+			    	brickController.update(brick);
+			    	generateBrickImage();
+			    	ballController.bounceOffBrick(brick.getX(), brick.getWidth());
+			        break;
+			    }
+			}
+			
 			if(!alive) {
 				playerDeath();
 			}
@@ -251,6 +298,9 @@ public class GameView extends JPanel {
         updateInitialBallPosition();
         gameOverlays.resetHUD();
         
+        brickGrid.updateSizeAndLayout();
+        generateBrickImage();
+        
         revalidate();
         repaint();
     }
@@ -266,6 +316,8 @@ public class GameView extends JPanel {
     	gameOverlays.updateSizeAndLayout();
     	if(BrickBreaker.getInstance().getCurrentState() == GameState.GAME_OVER) {
     		gameOverlays.resetHUD();
+    		brickController.reset();
+    		generateBrickImage();
     	}
     }
     
