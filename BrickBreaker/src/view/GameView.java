@@ -128,7 +128,7 @@ public class GameView extends JPanel {
 		    public void keyPressed(KeyEvent e) {
 		    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
 		    	
-		        if (gameOverlays.getCurrentLives() <= 0 || gameOverlays.getGameWon()) {  // Only when Game Over is visible
+		        if (gameOverlays.getCurrentLives() <= 0 || gameOverlays.getGameWon()) {  // Only when Game Over or Game Won is visible
 		            if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 		                gameOverlays.toggleYesNoSelection();  // Switch to Yes
 		            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
@@ -211,7 +211,7 @@ public class GameView extends JPanel {
 				}
 			}
 			
-			if(gameOverlays.getCurrentScore() >= 3000) { //current max score if all bricks are destroyed
+			if(gameOverlays.getCurrentScore() >= 3000) { //current max score (3000) if all bricks are destroyed
 				winGame();
 			}
 			

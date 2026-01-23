@@ -118,7 +118,7 @@ public class BallController {
 	    boolean hitRightSide = (ball.getX() < brickX + brickWidth) && (ball.getX() > brickX + brickWidth - 10);  // Within 10px of right edge
 	    
 	    if (hitLeftSide || hitRightSide) {
-	        velocityX = -velocityX;  // Flip X to unstick from side
+	        velocityX = -velocityX;
 	    }
 	    else {
 	    	velocityY = -velocityY;

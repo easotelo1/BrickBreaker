@@ -186,7 +186,6 @@ public class InGameOverlays extends JPanel {
 		
 		///////////GAME OVER///////////
 		if(showGameOver || gameWon) {
-			
 			setFocusable(true);
 
 			if(gameWon) {
