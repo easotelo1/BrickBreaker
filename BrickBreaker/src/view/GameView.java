@@ -128,7 +128,7 @@ public class GameView extends JPanel {
 		    public void keyPressed(KeyEvent e) {
 		    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
 		    	
-		        if (gameOverlays.getCurrentLives() <= 0) {  // Only when Game Over is visible
+		        if (gameOverlays.getCurrentLives() <= 0 || gameOverlays.getGameWon()) {  // Only when Game Over is visible
 		            if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 		                gameOverlays.toggleYesNoSelection();  // Switch to Yes
 		            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
@@ -179,6 +179,46 @@ public class GameView extends JPanel {
 		    g2d.drawImage(brickImage, 0, 0, null);
 		}
 		
+		
+	}
+	
+	// This method is called by the BrickBreaker controller's Timer loop.
+	public void updateGameLogic(double timeDeltaSeconds) {
+		BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		
+		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
+		
+		if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
+			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
+		}
+		else {
+			//ball movement
+			boolean alive = this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
+			
+			//paddle collision 
+			if(intersects()) {
+				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
+			}
+			
+			//brick collision
+			for (int i = brickGrid.getBricks().size() - 1; i >= 0; i--) {
+				Brick brick = brickGrid.getBricks().get(i);
+				if (intersectsBallBrick(brick) && brick.isAlive()) {
+					brickController.update(brick);
+					generateBrickImage();
+					ballController.bounceOffBrick(brick.getX(), brick.getWidth());
+					break;
+				}
+			}
+			
+			if(gameOverlays.getCurrentScore() >= 3000) { //current max score if all bricks are destroyed
+				winGame();
+			}
+			
+			if(!alive) {
+				playerDeath();
+			}
+		}
 		
 	}
 	
@@ -250,41 +290,6 @@ public class GameView extends JPanel {
 	           ball.getY() + ball.getHeight() > brick.getY();
 	}
 		
-	// This method is called by the BrickBreaker controller's Timer loop.
-	public void updateGameLogic(double timeDeltaSeconds) {
-		BrickBreaker brickBreaker = BrickBreaker.getInstance();
-		
-		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
-		
-		if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
-			this.ballController.moveWithPaddle(paddle.getX() + (paddle.getWidth()/2 - ball.getWidth()/2));
-		}
-		else {
-			//ball movement
-			boolean alive = this.ballController.update(timeDeltaSeconds, mainPanelSize[0], mainPanelSize[1]);
-			
-			//paddle collision 
-			if(intersects()) {
-				ballController.bounceOffPaddle(paddle.getX(), paddle.getY(), paddle.getWidth(), mainPanelSize[0]);
-			}
-			
-			//brick collision
-			for (int i = brickGrid.getBricks().size() - 1; i >= 0; i--) {
-			    Brick brick = brickGrid.getBricks().get(i);
-			    if (intersectsBallBrick(brick) && brick.isAlive()) {
-			    	brickController.update(brick);
-			    	generateBrickImage();
-			    	ballController.bounceOffBrick(brick.getX(), brick.getWidth());
-			        break;
-			    }
-			}
-			
-			if(!alive) {
-				playerDeath();
-			}
-		}
-		
-    }
 	
     public void updateSizeAndLayout() {
         mainPanelSize = screen.getScreenResolution();
@@ -321,7 +326,7 @@ public class GameView extends JPanel {
     	}
     }
     
-    public void playerDeath() {
+    private void playerDeath() {
     	BrickBreaker brickBreaker = BrickBreaker.getInstance();
     	
     	System.out.println("You died");
@@ -338,6 +343,16 @@ public class GameView extends JPanel {
         	resetGame();
         }
         
+		revalidate();
+		repaint();
+    }
+    
+    private void winGame() {
+    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+    	System.out.println("You win!");
+
+    	gameOverlays.winGame();
+		brickBreaker.setCurrentState(GameState.GAME_OVER);
 		revalidate();
 		repaint();
     }

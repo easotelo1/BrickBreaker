@@ -20,20 +20,24 @@ public class InGameOverlays extends JPanel {
 	private boolean showLaunchOverlay;
 	private boolean showGameOver;
 	private boolean yesSelected;
+	private boolean gameWon;
 	
 	//cached fontmetrics and text sizes
 	private Font hudFont;
 	private Font launchFont;
+	private Font gameWonFont;
 	private Font gameOverFont;
 	private Font playAgainFont;
 	private Font yesNoFont;
 	
 	private FontMetrics launchMetrics;
+	private FontMetrics gameWonMetrics;
 	private FontMetrics gameOverMetrics;
 	private FontMetrics playAgainMetrics;
 	private FontMetrics yesNoMetrics;
 	
 	private final String launchText = "Push SPACE to launch!";
+	private final String gameWonText = "YOU WIN";
 	private final String gameOverText = "GAME OVER";
 	private final String playAgainText = "Play Again?";
 	private final String yesText = "Yes";
@@ -44,6 +48,12 @@ public class InGameOverlays extends JPanel {
 	private int launchTextAscent;
 	private int launchCenterX;
 	private int launchCenterY;
+	
+	private int gameWonTextWidth;
+	private int gameWonTextHeight;
+	private int gameWonTextAscent;
+	private int gameWonCenterX;
+	private int gameWonCenterY;
 	
 	private int gameOverTextWidth;
 	private int gameOverTextHeight;
@@ -62,7 +72,6 @@ public class InGameOverlays extends JPanel {
 	private int yesCenterY;
 	private int noCenterX;
 	private int noCenterY;
-	
 
 	public InGameOverlays() {
 		mainPanelSize = screen.getScreenResolution();
@@ -72,6 +81,8 @@ public class InGameOverlays extends JPanel {
 		this.showLaunchOverlay = true;
 		this.showGameOver = false;
 		this.yesSelected = true;
+		
+		this.gameWon = false;
 		
 		setOpaque(false);
 		setFocusable(false);
@@ -88,6 +99,9 @@ public class InGameOverlays extends JPanel {
 		
 		int launchSize = (int) (screenWidth * 0.04);
 		launchFont = new Font("Arial", Font.BOLD, launchSize);
+		
+		int gameWonSize = (int) (screenWidth * 0.035);
+		gameWonFont = new Font("Arial", Font.BOLD, gameWonSize);
 		
 		int gameOverSize = (int) (screenWidth * 0.035);
 		gameOverFont = new Font("Arial", Font.BOLD, gameOverSize);
@@ -114,6 +128,13 @@ public class InGameOverlays extends JPanel {
         gameOverTextAscent = gameOverMetrics.getAscent();
         gameOverCenterX = (screenWidth - gameOverTextWidth) / 2;
         gameOverCenterY = (screenHeight / 2) - (int) (screenHeight * 0.2) + gameOverTextAscent;
+
+        gameWonMetrics = g2d.getFontMetrics(gameWonFont);
+        gameWonTextWidth = gameWonMetrics.stringWidth(gameWonText);
+        gameWonTextHeight = gameWonMetrics.getHeight();
+        gameWonTextAscent = gameWonMetrics.getAscent();
+        gameWonCenterX = (screenWidth - gameWonTextWidth) / 2;
+        gameWonCenterY = (screenHeight / 2) - (int) (screenHeight * 0.2) + gameWonTextAscent;
         
         playAgainMetrics = g2d.getFontMetrics(playAgainFont);
         playAgainTextWidth = playAgainMetrics.stringWidth(playAgainText);
@@ -121,7 +142,6 @@ public class InGameOverlays extends JPanel {
         playAgainCenterX = (screenWidth - playAgainTextWidth) / 2;
         playAgainCenterY = gameOverCenterY + gameOverTextHeight + 20;
 
-        
         yesNoMetrics = g2d.getFontMetrics(yesNoFont);
         yesTextWidth = yesNoMetrics.stringWidth(yesText);
         noTextWidth = yesNoMetrics.stringWidth(noText);
@@ -133,7 +153,6 @@ public class InGameOverlays extends JPanel {
         
         noCenterX = ((screenWidth - totalYesNoWidth) / 2) + yesTextWidth + 60;
         noCenterY = yesCenterY;
-        
         
         g2d.dispose();
 	}
@@ -166,10 +185,19 @@ public class InGameOverlays extends JPanel {
 		}
 		
 		///////////GAME OVER///////////
-		if(showGameOver) {
+		if(showGameOver || gameWon) {
+			
 			setFocusable(true);
-			g2d.setFont(gameOverFont);
-			g2d.drawString(gameOverText, gameOverCenterX, gameOverCenterY);
+
+			if(gameWon) {
+				g2d.setFont(gameWonFont);
+				g2d.drawString(gameWonText, gameWonCenterX, gameWonCenterY);
+				playAgainCenterY = gameOverCenterY + gameWonTextHeight + 20;
+			}
+			else {
+				g2d.setFont(gameOverFont);
+				g2d.drawString(gameOverText, gameOverCenterX, gameOverCenterY);
+			}
 			
 			g2d.setFont(playAgainFont);
 			g2d.drawString(playAgainText, playAgainCenterX, playAgainCenterY);
@@ -195,12 +223,6 @@ public class InGameOverlays extends JPanel {
 	
 	public void showGameOver() {
         showGameOver = true;
-        repaint();
-    }
-	
-	public void updateSizeAndLayout() {
-        mainPanelSize = screen.getScreenResolution();
-        updateFontMetrics();
         repaint();
     }
 	
@@ -234,11 +256,28 @@ public class InGameOverlays extends JPanel {
         return yesSelected;
     }
 	
+	public void winGame() {
+		this.gameWon = true;
+		repaint();
+	}
+	
+	public boolean getGameWon() {
+		return this.gameWon;
+	}
+	
+	public void updateSizeAndLayout() {
+		mainPanelSize = screen.getScreenResolution();
+		updateFontMetrics();
+		this.gameWon = false;
+		repaint();
+	}
+	
 	public void resetHUD() {
 		this.currentLives = 3;
 		this.currentScore = 0;
-		showLaunchOverlay = true;
-		showGameOver = false;
+		this.showLaunchOverlay = true;
+		this.showGameOver = false;
+		this.gameWon = false;
 		repaint();
 	}
 	
