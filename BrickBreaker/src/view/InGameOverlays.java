@@ -280,5 +280,4 @@ public class InGameOverlays extends JPanel {
 		repaint();
 	}
 	
-
 }
