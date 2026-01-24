@@ -1,14 +1,20 @@
 package controller;
 import model.GameState;
+import service.SoundManager;
 import view.GameFrame;
 import view.GameView;
 
 public final class BrickBreaker {
 	
 	private static final BrickBreaker INSTANCE = new BrickBreaker();
+	private static final SoundManager SOUNDMANAGER_INSTANCE = new SoundManager();
 	
 	public static BrickBreaker getInstance() {
 		return INSTANCE;
+	}
+	
+	public static SoundManager getSoundManagerInstance() {
+		return SOUNDMANAGER_INSTANCE;
 	}
     
 	private Thread gameThread;
