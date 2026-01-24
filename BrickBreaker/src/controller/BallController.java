@@ -113,6 +113,25 @@ public class BallController {
         }
 	}
 	
+	public void bounceOffBrick(int brickX, int brickWidth) {
+		boolean hitLeftSide = (ball.getX() + ball.getWidth() > brickX) && (ball.getX() + ball.getWidth() < brickX + 10);  // Within 10px of left edge
+	    boolean hitRightSide = (ball.getX() < brickX + brickWidth) && (ball.getX() > brickX + brickWidth - 10);  // Within 10px of right edge
+	    
+	    if (hitLeftSide || hitRightSide) {
+	        velocityX = -velocityX;
+	    }
+	    else {
+	    	velocityY = -velocityY;
+	    }
+	    
+	    //edgeCase Unstuck
+	    if (hitLeftSide) {
+	        ball.setX(brickX - ball.getWidth());
+	    } else if (hitRightSide) {
+	        ball.setX(brickX + brickWidth);
+	    }
+	}
+	
 	public void reset() {
 		this.isLaunched = false;
 		this.velocityX = 0;
