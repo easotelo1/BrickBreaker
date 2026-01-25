@@ -1,14 +1,20 @@
 package controller;
 import model.GameState;
+import service.SoundManager;
 import view.GameFrame;
 import view.GameView;
 
 public final class BrickBreaker {
 	
 	private static final BrickBreaker INSTANCE = new BrickBreaker();
+	private static final SoundManager SOUNDMANAGER_INSTANCE = new SoundManager();
 	
 	public static BrickBreaker getInstance() {
 		return INSTANCE;
+	}
+	
+	public static SoundManager getSoundManagerInstance() {
+		return SOUNDMANAGER_INSTANCE;
 	}
     
 	private Thread gameThread;
@@ -22,6 +28,9 @@ public final class BrickBreaker {
 	private GameView gameView;
 	private GameState currentState;
 	private GameState previousState;
+	
+	private final String menuMusic = "menuTheme";
+	private final String gameMusic = "gameTheme";
 	
 	public BrickBreaker() {
 		GameFrame.getGameFrame();
@@ -50,7 +59,7 @@ public final class BrickBreaker {
             }
 
             gameView.repaint();
-
+            
             // Small sleep to prevent 100% CPU usage
             try {
                 Thread.sleep(1);
@@ -62,10 +71,10 @@ public final class BrickBreaker {
     }
 	
 	public void startGame() {
+		SOUNDMANAGER_INSTANCE.playMusic(gameMusic);
 		currentState = GameState.INGAME_NOT_PLAYING;
 		GameFrame.setView("game");
 		gameView.grabFocus();
-//		gameView.resetGame();
 		running = true;
         paused = false;
         if(gameThread == null || !gameThread.isAlive()) {
@@ -111,6 +120,7 @@ public final class BrickBreaker {
 	}
 	
 	public void exitToMenu() {
+		SOUNDMANAGER_INSTANCE.playMusic(menuMusic);
 		running = false;
 		if (gameThread != null && gameThread.isAlive()) {
             try {

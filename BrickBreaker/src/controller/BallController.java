@@ -3,17 +3,19 @@ package controller;
 import java.util.Random;
 
 import model.Ball;
+import service.SoundManager;
 
 public class BallController {
+	private final String BOUNCE_SOUND = "bounce";
 	
 	private Ball ball;
 	private final Random rand = new Random();
 	
 	private double velocityX = 0;
 	private double velocityY = 0;
-	private static final double SPEED_RATIO = 0.5;
+	private final double SPEED_RATIO = 0.5;
 	
-	private static final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: +/- 20 degrees from straight up
+	private final double LAUNCH_CONE_ANGLE_DEGREES = 65.0;  // Total cone width: +/- 20 degrees from straight up
 	
 	private boolean isLaunched = false;
 	
@@ -111,6 +113,9 @@ public class BallController {
         if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= screenWidth) {
         	this.velocityX = -(this.velocityX);
         }
+        
+        SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
+        soundManager.playSoundEffect(BOUNCE_SOUND);
 	}
 	
 	public void bounceOffBrick(int brickX, int brickWidth) {
@@ -130,6 +135,9 @@ public class BallController {
 	    } else if (hitRightSide) {
 	        ball.setX(brickX + brickWidth);
 	    }
+	    
+	    SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
+        soundManager.playBrickDestroy();
 	}
 	
 	public void reset() {
