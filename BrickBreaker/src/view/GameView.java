@@ -117,7 +117,7 @@ public class GameView extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 					BrickBreaker brickBreaker = BrickBreaker.getInstance();
-					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING) {
+					if(brickBreaker.getCurrentState() == GameState.INGAME_NOT_PLAYING && !deathPaused) {
 						brickBreaker.startPlaying();
 						gameOverlays.hideLaunchOverlay();
 						ballController.launch(mainPanelSize[0]); 
