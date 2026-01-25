@@ -192,10 +192,4 @@ public class SoundManager implements AudioService {
 		fc.setValue(gain);
 	}
 	
-	public boolean isSFXPlaying(String name) {
-		Clip clip = soundMap.get(name);
-		return clip.isRunning();
-	}
-	
-
 }

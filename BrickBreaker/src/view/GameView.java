@@ -56,7 +56,6 @@ public class GameView extends JPanel {
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
 	
-	private final String gameTheme = "gameTheme";
 	private final String gameOverTheme = "gameOverTheme";
 	private final String winSound = "win";
 	
