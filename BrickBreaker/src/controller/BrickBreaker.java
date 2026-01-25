@@ -29,6 +29,9 @@ public final class BrickBreaker {
 	private GameState currentState;
 	private GameState previousState;
 	
+	private final String menuMusic = "menuTheme";
+	private final String gameMusic = "gameTheme";
+	
 	public BrickBreaker() {
 		GameFrame.getGameFrame();
 		currentState = GameState.MENU;
@@ -68,10 +71,10 @@ public final class BrickBreaker {
     }
 	
 	public void startGame() {
+		SOUNDMANAGER_INSTANCE.playMusic(gameMusic);
 		currentState = GameState.INGAME_NOT_PLAYING;
 		GameFrame.setView("game");
 		gameView.grabFocus();
-//		gameView.resetGame();
 		running = true;
         paused = false;
         if(gameThread == null || !gameThread.isAlive()) {
@@ -117,6 +120,7 @@ public final class BrickBreaker {
 	}
 	
 	public void exitToMenu() {
+		SOUNDMANAGER_INSTANCE.playMusic(menuMusic);
 		running = false;
 		if (gameThread != null && gameThread.isAlive()) {
             try {

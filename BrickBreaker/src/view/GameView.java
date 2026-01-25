@@ -56,6 +56,10 @@ public class GameView extends JPanel {
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
 	
+	private final String gameTheme = "gameTheme";
+	private final String gameOverTheme = "gameOverTheme";
+	private final String winSound = "win";
+	
 	private boolean deathPaused = false;
 		    
 	private BufferedImage brickImage = null;
@@ -141,10 +145,12 @@ public class GameView extends JPanel {
 		                soundManager.playSelect();
 		            } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
 		                if (gameOverlays.isYesSelected()) {
+		                	soundManager.stopMusic();
 		                	System.out.println("Play Again Selected!");
 		                	resetGame();
 		                    brickBreaker.startGame();  // Reset & restart
 		                } else {
+		                	soundManager.stopMusic();
 		                	System.out.println("Back to main menu selected!");
 		                	gameOverlays.toggleYesNoSelection(); //resets default selection back to yes
 		                    brickBreaker.exitToMenu();
@@ -340,9 +346,11 @@ public class GameView extends JPanel {
     	
     	System.out.println("You died");
 		gameOverlays.decreaseLives();
+		SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
 		
         if(gameOverlays.getCurrentLives() <= 0) {
         	System.out.println("Game Over");
+        	soundManager.playMusic(gameOverTheme);
         	brickBreaker.setCurrentState(GameState.GAME_OVER);
         	gameOverlays.showGameOver();
         	paddleController.stop();
@@ -350,7 +358,6 @@ public class GameView extends JPanel {
         else { 
         	this.deathPaused = true;
         	brickBreaker.playerDied();
-        	SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
         	soundManager.playDeathSound(() -> {
         		this.resumeAfterDeath();
         	});
@@ -368,6 +375,9 @@ public class GameView extends JPanel {
     
     private void winGame() {
     	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+    	SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
+    	soundManager.stopMusic();
+    	soundManager.playSoundEffect(winSound);
     	System.out.println("You win!");
 
     	gameOverlays.winGame();

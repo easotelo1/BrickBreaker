@@ -9,10 +9,11 @@ import javax.sound.sampled.FloatControl;
 public class SoundManager implements AudioService {
 	
 	private final String pathPrefix = "../resources/sounds/";
+	private final String initClip = "menuTheme";
 	
 	private HashMap<String, Clip> soundMap;
 	
-	//that way sounds can overlap if theyre multiple triggers in succession  
+	//that way sounds can overlap if there are multiple triggers in succession  
 	private ArrayList<Clip> destroyPool;
 	private ArrayList<Clip> selectPool;
 	
@@ -23,11 +24,19 @@ public class SoundManager implements AudioService {
 	
 	public SoundManager() {
 		this.soundMap = new HashMap<>();
+		//sfx
 		loadSound("bounce", pathPrefix + "bounce.wav");
 		loadSound("death", pathPrefix + "death.wav");
-		loadSound("gameOver", pathPrefix + "game-over.wav");
+		loadSound("win", pathPrefix + "game-clear.wav");
 		loadDestroySounds(pathPrefix + "brick-destroy.wav");
 		loadSelectSounds(pathPrefix + "select.wav");
+		
+		//music
+		loadSound("menuTheme", pathPrefix + "menu-theme.wav");
+		loadSound("gameTheme", pathPrefix + "game-theme.wav");
+		loadSound("gameOverTheme", pathPrefix + "game-over.wav");
+		
+		playMusic(initClip);
 	}
 	
 	private void loadSound(String clipName, String path) {
@@ -61,6 +70,19 @@ public class SoundManager implements AudioService {
 				clip.stop();
 			}
 			clip.setFramePosition(0);
+			
+			switch(clipName) {
+				case "bounce":
+					setVolume(clip, 0.85f);
+					break;
+				case "win":
+					setVolume(clip, 0.75f);
+					break;
+				default:
+					setVolume(clip, 1.0f);
+					break;
+					
+			}
 			clip.start();
 		}
 
@@ -73,7 +95,7 @@ public class SoundManager implements AudioService {
 				clip.stop();
 			}
 			clip.setFramePosition(0);
-			setVolume(clip, 0.75f);
+			setVolume(clip, 0.65f);
 			clip.start();
 			selectPoolIndex = (selectPoolIndex + 1) % selectPool.size();
 		}
@@ -87,6 +109,7 @@ public class SoundManager implements AudioService {
 				clip.stop();
 			}
 			clip.setFramePosition(0);
+			setVolume(clip, 0.75f);
 			clip.start();
 			destroyPoolIndex = (destroyPoolIndex + 1) % destroyPool.size();
 		}
@@ -97,6 +120,7 @@ public class SoundManager implements AudioService {
 	    Clip clip = soundMap.get("death");
 	    if (clip != null) {
 	        clip.setFramePosition(0);
+	        setVolume(clip, 0.85f);
 	        clip.start();
 
 	        long clipDurationMs = clip.getMicrosecondLength() / 1000;
@@ -114,10 +138,32 @@ public class SoundManager implements AudioService {
 
 	@Override
 	public void playMusic(String clipName) {
-		if (currentMusic != null) currentMusic.stop();
+		//no need to restart song if play again
+		if(soundMap.get(clipName).equals(currentMusic)) {
+			return; 
+		}
+		
+		if (currentMusic != null) {
+			currentMusic.stop();
+		}
+		
         currentMusic = soundMap.get(clipName);
+        
         if (currentMusic != null) {
             currentMusic.setFramePosition(0);
+            switch(clipName) {
+            	case "menuTheme":
+				case "gameTheme":
+					setVolume(currentMusic, 0.85f);
+					break;
+				case "gameOverTheme":
+					setVolume(currentMusic, 0.75f);
+					break;
+				default:
+					setVolume(currentMusic, 1.0f);
+					break;	
+            }
+            setVolume(currentMusic, 0.75f);
             currentMusic.loop(Clip.LOOP_CONTINUOUSLY);
         }
 	}
@@ -126,6 +172,11 @@ public class SoundManager implements AudioService {
 	public void stopMusic() {
         if (currentMusic != null) {
         	currentMusic.stop();
+        	currentMusic = null;
+        }
+        
+        for(Clip clip : soundMap.values()) {
+        	clip.stop();
         }
 
 	}
