@@ -135,6 +135,9 @@ public class BallController {
 	    } else if (hitRightSide) {
 	        ball.setX(brickX + brickWidth);
 	    }
+	    
+	    SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
+        soundManager.playBrickDestroy();
 	}
 	
 	public void reset() {

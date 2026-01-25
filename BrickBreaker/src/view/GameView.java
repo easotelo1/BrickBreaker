@@ -22,6 +22,7 @@ import model.Brick;
 import model.GameState;
 import model.Paddle;
 import model.Screen;
+import service.SoundManager;
 
 @SuppressWarnings("serial")
 public class GameView extends JPanel {
@@ -54,6 +55,8 @@ public class GameView extends JPanel {
 	
 	private static final double BALL_WIDTH_RATIO = 0.019;  // 1.9% of screen width
 	private static final int BALL_PADDLE_HEIGHT_GAP = 10;  //10 pixels
+	
+	private boolean deathPaused = false;
 		    
 	private BufferedImage brickImage = null;
 	
@@ -127,12 +130,15 @@ public class GameView extends JPanel {
 		    @Override
 		    public void keyPressed(KeyEvent e) {
 		    	BrickBreaker brickBreaker = BrickBreaker.getInstance();
+		    	SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
 		    	
 		        if (gameOverlays.getCurrentLives() <= 0 || gameOverlays.getGameWon()) {  // Only when Game Over or Game Won is visible
 		            if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 		                gameOverlays.toggleYesNoSelection();  // Switch to Yes
+		                soundManager.playSelect();
 		            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 		                gameOverlays.toggleYesNoSelection();  // Switch to No
+		                soundManager.playSelect();
 		            } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
 		                if (gameOverlays.isYesSelected()) {
 		                	System.out.println("Play Again Selected!");
@@ -184,6 +190,9 @@ public class GameView extends JPanel {
 	
 	// This method is called by the BrickBreaker controller's Timer loop.
 	public void updateGameLogic(double timeDeltaSeconds) {
+		if(deathPaused) {
+			return;
+		}
 		BrickBreaker brickBreaker = BrickBreaker.getInstance();
 		
 		this.paddleController.update(timeDeltaSeconds, mainPanelSize[0]);
@@ -339,12 +348,22 @@ public class GameView extends JPanel {
         	paddleController.stop();
         } 
         else { 
+        	this.deathPaused = true;
         	brickBreaker.playerDied();
-        	resetGame();
+        	SoundManager soundManager = BrickBreaker.getSoundManagerInstance();
+        	soundManager.playDeathSound(() -> {
+        		this.resumeAfterDeath();
+        	});
         }
         
 		revalidate();
 		repaint();
+    }
+    
+    private void resumeAfterDeath() {
+    	this.deathPaused = false;
+    	resetGame();
+    	repaint();
     }
     
     private void winGame() {

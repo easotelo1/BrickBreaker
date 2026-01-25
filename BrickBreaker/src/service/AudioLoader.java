@@ -1,5 +1,6 @@
 package service;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 import javax.sound.sampled.AudioInputStream;
@@ -16,7 +17,9 @@ public class AudioLoader {
 				throw new Exception("Sound file not found: " + path);
 			}
 			
-			AudioInputStream audioStream = AudioSystem.getAudioInputStream(is);
+			InputStream bufferedIn = new BufferedInputStream(is);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            
 			Clip clip = AudioSystem.getClip();
 			clip.open(audioStream);
 			

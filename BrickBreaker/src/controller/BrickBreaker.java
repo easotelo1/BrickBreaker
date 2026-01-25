@@ -56,7 +56,7 @@ public final class BrickBreaker {
             }
 
             gameView.repaint();
-
+            
             // Small sleep to prevent 100% CPU usage
             try {
                 Thread.sleep(1);
