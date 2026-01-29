@@ -4,7 +4,27 @@ Hello! My name is Everett Sotelo and I am a professional software engineer with 
 
 I think my effort here is solid but I can obviously see areas where I need to go back and improve, so don't expect this codebase to be perfect. I have accrued enough technical debt on the side and am very well aware of some of the issues or opportunities to refactor that this codebase has. However, this was a small project to test my abilities so that I can reflect on my Java when I had not touched the language in about 7 years. Therefore, I will leave this as is and move on to something else. Enjoy!
 
-# Brick Breaker
+## Features
+
+1. Main Menu
+    * User is able to navigate a standard main menu. This includes, clicking a button to play the game, clicking a button to go to the settings menu, and clicking a button to exit the game
+
+![main menu](BrickBreaker/src/resources/images/main%20menu.png)
+
+2. Settings Menu
+    * User is able to change between 3 different resolutions. I chose a standard resolution of 1280x720, but also included the more common resolution option of 1920x1080. My personal monitor is a 2560x1440 so I included that as well for fun
+
+![settings](BrickBreaker/src/resources/images/settings.png)
+
+3. Game 
+    * Scoring system (max score 3000)
+    * Death/Game Over System (3 lives per game)
+    * Pausing system
+    * Game Clear logic
+
+![game](BrickBreaker/src/resources/images/game.png)
+
+# Extra Details
 
 My implementation of the game attempts at creating a standard MVC architectural pattern. 
 
@@ -42,23 +62,3 @@ The controller will have the main entry point of the application (should probabl
 2. Ball
 3. Paddle
 4. Brick
-
-## Features
-
-1. Main Menu
-    * User is able to navigate a standard main menu. This includes, clicking a button to play the game, clicking a button to go to the settings menu, and clicking a button to exit the game
-
-![main menu](BrickBreaker/src/resources/images/main%20menu.png)
-
-2. Settings Menu
-    * User is able to change between 3 different resolutions. I chose a standard resolution of 1280x720, but also included the more common resolution option of 1920x1080. My personal monitor is a 2560x1440 so I included that as well for fun
-
-![settings](BrickBreaker/src/resources/images/settings.png)
-
-3. Game 
-    * Scoring system (max score 3000)
-    * Death/Game Over System (3 lives per game)
-    * Pausing system
-    * Game Clear logic
-
-![game](BrickBreaker/src/resources/images/game.png)
