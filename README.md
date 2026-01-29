@@ -62,3 +62,41 @@ The controller will have the main entry point of the application (should probabl
 2. Ball
 3. Paddle
 4. Brick
+
+### Credits
+
+The following music and sound was used in this project
+
+1. **Main Menu Theme**
+    * Song: Kirby's Block Ball - Stage 1 (KDL3 Remix)
+    * Author: Pinci
+    * [source](https://www.smwcentral.net/?p=section&a=details&id=8818)
+2. **Game Theme**
+    * Song: Castlevania Adventure - Battle of the Holy
+    * Author: Wakana, Izuna
+    * [source](https://www.smwcentral.net/?p=section&a=details&id=10918)
+3. **Game Over Theme**
+    * Song: Mega Man & Bass - Game Over
+    * Author: Ultima
+    * [source](https://www.smwcentral.net/?p=section&a=details&id=25803)
+4. **Game Clear SFX**
+    * Audio: Sonic 3 & Knuckles - Act Clear
+    * Author: AntiDuck
+    * [source](https://www.smwcentral.net/?p=section&a=details&id=15189)
+5. **Bounce SFX**
+    * Audio:  Bounce YoFrankie
+    * Author: Lamoot
+    * [source](https://opengameart.org/content/funny-comic-cartoon-bounce-sound)
+    * [License: CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+6. **Brick Break SFX**
+    * Audio: Hit Rock 01
+    * Author: u_xjrmmgxfru
+    * [source](https://pixabay.com/sound-effects/film-special-effects-hit-rock-01-266301/)
+7. **Death SFX**
+    * Audio: Game Over Arcade
+    * Author: myfox14 (Freesound)
+    * [source](https://pixabay.com/sound-effects/film-special-effects-game-over-arcade-6435/)
+8. **Select SFX**
+    * Audio: Select
+    * Author: Abran331
+    * [source](https://www.101soundboards.com/sounds/29960814-select)
