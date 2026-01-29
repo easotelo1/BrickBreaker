@@ -63,7 +63,7 @@ The controller will have the main entry point of the application (should probabl
 3. Paddle
 4. Brick
 
-### Credits
+## Credits
 
 The following music and sound was used in this project
 
