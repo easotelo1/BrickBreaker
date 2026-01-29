@@ -1,6 +1,7 @@
 .metadata/
 bin/
 BrickBreaker/.classpath
+local-files/*
 .classpath*
 .settings*
 .project*
